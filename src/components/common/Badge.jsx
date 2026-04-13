@@ -7,17 +7,18 @@ export function Badge({
   ...props 
 }) {
   const variants = {
-    default: 'bg-secondary text-text-secondary',
-    success: 'bg-success/10 text-success',
-    error: 'bg-error/10 text-error',
-    warning: 'bg-yellow-100 text-yellow-800',
-    accent: 'bg-accent/10 text-accent',
+    default: 'bg-tertiary text-text-secondary border-border',
+    success: 'bg-success/10 text-success border-success/20',
+    error: 'bg-error/10 text-error border-error/20',
+    warning: 'bg-warning/10 text-warning border-warning/20',
+    accent: 'bg-accent/10 text-accent border-accent/20',
+    gradient: 'bg-gradient-to-r from-accent/10 to-accent-secondary/10 text-text-primary border-accent/20',
   }
 
   return (
     <span
       className={cn(
-        'inline-flex items-center px-3 py-1 rounded-full text-sm font-medium',
+        'inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-semibold uppercase tracking-wider border',
         variants[variant],
         className
       )}

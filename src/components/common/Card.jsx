@@ -4,13 +4,15 @@ export function Card({
   children, 
   className,
   hover = true,
+  gradient = false,
   ...props 
 }) {
   return (
     <div
       className={cn(
-        'bg-white rounded-20 shadow-card p-6',
-        hover && 'transition-all duration-300 hover:shadow-card-hover hover:-translate-y-1',
+        'relative rounded-3xl bg-secondary border border-border p-6',
+        hover && 'transition-all duration-500 hover:border-accent/30 hover:-translate-y-1 hover:shadow-glow',
+        gradient && 'gradient-border',
         className
       )}
       {...props}
@@ -30,7 +32,7 @@ export function CardHeader({ children, className, ...props }) {
 
 export function CardTitle({ children, className, ...props }) {
   return (
-    <h3 className={cn('text-xl font-semibold text-text-primary', className)} {...props}>
+    <h3 className={cn('text-xl font-bold text-text-primary', className)} {...props}>
       {children}
     </h3>
   )

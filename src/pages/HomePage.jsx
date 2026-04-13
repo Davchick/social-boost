@@ -4,23 +4,25 @@ import { Advantages } from '@/components/sections/Advantages'
 import { Stats } from '@/components/sections/Stats'
 import { Testimonials } from '@/components/sections/Testimonials'
 import { CTASection } from '@/components/sections/CTASection'
+import { ClientsMarquee } from '@/components/sections/ClientsMarquee'
 
 export default function HomePage() {
   return (
     <>
       <Hero
-        title="Интернет-реклама, которая приносит результат"
-        subtitle="Привлекаем клиентов для вашего бизнеса через контекстную и таргетированную рекламу, SEO и SMM. Прозрачная аналитика и измеримый ROI."
-        primaryCta={{ label: 'Оставить заявку', href: '/contact' }}
-        secondaryCta={{ label: 'Наши кейсы', href: '/cases' }}
+        title="Взрываем ваши социальные сети"
+        subtitle="SMM-агентство нового поколения. Создаём вирусный контент, запускаем таргет и работаем с блогерами. Результат — рост продаж и узнаваемости."
+        primaryCta={{ label: 'Начать проект', href: '/contact' }}
+        secondaryCta={{ label: 'Смотреть кейсы', href: '/cases' }}
       />
+      <ClientsMarquee />
       <ServicesGrid limit={4} />
-      <Advantages />
       <Stats />
+      <Advantages />
       <Testimonials />
       <CTASection 
-        title="Готовы увеличить продажи?"
-        subtitle="Получите бесплатную консультацию и аудит текущих рекламных кампаний"
+        title="Готовы взорвать соцсети?"
+        subtitle="Получите бесплатный аудит ваших социальных сетей и стратегию продвижения"
       />
     </>
   )

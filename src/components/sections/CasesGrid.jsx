@@ -1,6 +1,5 @@
 import { Link } from 'react-router-dom'
-import { ArrowRight } from 'lucide-react'
-import { Card } from '@/components/common/Card'
+import { ArrowUpRight, TrendingUp } from 'lucide-react'
 import { Badge } from '@/components/common/Badge'
 import { useScrollAnimation } from '@/hooks/useScrollAnimation'
 import { cn } from '@/utils/cn'
@@ -15,32 +14,51 @@ export function CasesGrid({ cases }) {
           key={caseItem.id} 
           to={`/cases/${caseItem.slug}`}
           className={cn(
-            'opacity-0 translate-y-5',
-            isVisible && 'animate-fade-in'
+            'group opacity-0',
+            isVisible && 'animate-slide-up'
           )}
           style={{ animationDelay: `${index * 0.1}s` }}
         >
-          <Card className="h-full group">
-            <div className="aspect-video bg-secondary rounded-12 overflow-hidden mb-4">
+          <div className="relative h-full rounded-3xl bg-secondary border border-border overflow-hidden transition-all duration-500 hover:border-accent/30 hover:-translate-y-2 hover:shadow-glow">
+            {/* Image */}
+            <div className="aspect-[4/3] overflow-hidden">
               <img 
                 src={caseItem.image} 
                 alt={caseItem.title}
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
               />
+              {/* Overlay gradient */}
+              <div className="absolute inset-0 bg-gradient-to-t from-secondary via-transparent to-transparent" />
             </div>
-            <div className="flex items-center gap-2 mb-3">
-              <Badge>{caseItem.industry}</Badge>
-              <Badge variant="accent">{caseItem.service}</Badge>
+            
+            {/* Content */}
+            <div className="p-6">
+              {/* Tags */}
+              <div className="flex items-center gap-2 mb-4">
+                <Badge>{caseItem.industry}</Badge>
+                <Badge variant="accent">{caseItem.service}</Badge>
+              </div>
+              
+              {/* Title */}
+              <h3 className="text-xl font-bold text-text-primary group-hover:gradient-text transition-all duration-300">
+                {caseItem.title}
+              </h3>
+              <p className="mt-1 text-text-secondary">{caseItem.client}</p>
+              
+              {/* Result */}
+              <div className="mt-5 flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <div className="w-10 h-10 rounded-xl bg-accent/20 flex items-center justify-center">
+                    <TrendingUp className="w-5 h-5 text-accent" />
+                  </div>
+                  <span className="text-2xl font-bold gradient-text">{caseItem.result}</span>
+                </div>
+                <div className="w-10 h-10 rounded-xl bg-tertiary flex items-center justify-center group-hover:bg-accent transition-colors">
+                  <ArrowUpRight className="w-5 h-5 text-text-secondary group-hover:text-white transition-colors" />
+                </div>
+              </div>
             </div>
-            <h3 className="text-lg font-semibold text-text-primary group-hover:text-accent transition-colors">
-              {caseItem.title}
-            </h3>
-            <p className="mt-1 text-sm text-text-secondary">{caseItem.client}</p>
-            <div className="mt-4 flex items-center justify-between">
-              <span className="text-2xl font-bold text-accent">{caseItem.result}</span>
-              <ArrowRight className="w-5 h-5 text-text-secondary group-hover:text-accent group-hover:translate-x-1 transition-all" />
-            </div>
-          </Card>
+          </div>
         </Link>
       ))}
     </div>

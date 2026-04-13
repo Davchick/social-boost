@@ -18,8 +18,8 @@ export function DashboardLayout() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-8 w-8 border-2 border-accent border-t-transparent" />
+      <div className="min-h-screen flex items-center justify-center bg-primary">
+        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-accent to-accent-secondary animate-pulse" />
       </div>
     )
   }
@@ -29,14 +29,14 @@ export function DashboardLayout() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-secondary">
+    <div className="min-h-screen flex flex-col bg-primary">
       <Header />
-      <main className="flex-1 pt-20">
+      <main className="flex-1 pt-24">
         <Container className="py-8 md:py-12">
           <div className="flex flex-col lg:flex-row gap-8">
             {/* Sidebar */}
             <aside className="lg:w-64 flex-shrink-0">
-              <nav className="bg-white rounded-20 shadow-card p-4">
+              <nav className="sticky top-24 bg-secondary rounded-2xl border border-border p-3">
                 <ul className="space-y-1">
                   {sidebarLinks.map((link) => (
                     <li key={link.to}>
@@ -45,10 +45,10 @@ export function DashboardLayout() {
                         end={link.end}
                         className={({ isActive }) =>
                           cn(
-                            'flex items-center gap-3 px-4 py-3 rounded-12 transition-colors',
+                            'flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300',
                             isActive
-                              ? 'bg-accent text-white'
-                              : 'text-text-secondary hover:bg-secondary hover:text-text-primary'
+                              ? 'bg-gradient-to-r from-accent to-accent-secondary text-white shadow-glow'
+                              : 'text-text-secondary hover:bg-tertiary hover:text-text-primary'
                           )
                         }
                       >

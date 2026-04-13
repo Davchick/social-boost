@@ -9,18 +9,19 @@ export function Button({
   loading,
   ...props 
 }) {
-  const baseStyles = 'inline-flex items-center justify-center font-medium transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed'
+  const baseStyles = 'inline-flex items-center justify-center font-semibold transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-primary disabled:opacity-50 disabled:cursor-not-allowed'
   
   const variants = {
-    primary: 'bg-accent text-white hover:bg-accent-hover hover:scale-[1.02] active:scale-[0.98]',
-    secondary: 'bg-transparent text-accent border border-accent hover:bg-accent/5 hover:scale-[1.02] active:scale-[0.98]',
+    primary: 'bg-gradient-to-r from-accent via-accent-secondary to-accent bg-[length:200%_100%] text-white hover:bg-[position:100%_0] hover:shadow-glow btn-shine',
+    secondary: 'bg-secondary text-text-primary border border-border hover:border-accent/50 hover:bg-secondary/80',
     ghost: 'bg-transparent text-text-primary hover:bg-secondary',
+    outline: 'bg-transparent text-accent border border-accent hover:bg-accent/10',
   }
 
   const sizes = {
-    default: 'px-8 py-4 text-base rounded-pill',
-    small: 'px-5 py-2.5 text-sm rounded-pill',
-    large: 'px-10 py-5 text-lg rounded-pill',
+    default: 'px-6 py-3 text-base rounded-xl',
+    small: 'px-4 py-2 text-sm rounded-lg',
+    large: 'px-8 py-4 text-lg rounded-2xl',
   }
 
   return (

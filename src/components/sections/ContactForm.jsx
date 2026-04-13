@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { Link } from 'react-router-dom'
-import { CheckCircle } from 'lucide-react'
+import { CheckCircle, Sparkles, Send } from 'lucide-react'
 import { Input } from '@/components/common/Input'
 import { Textarea } from '@/components/common/Textarea'
 import { Button } from '@/components/common/Button'
@@ -28,8 +28,10 @@ export function ContactForm() {
   if (isSubmitted) {
     return (
       <div className="text-center py-12">
-        <CheckCircle className="w-16 h-16 text-success mx-auto" />
-        <h3 className="mt-6 text-2xl font-semibold text-text-primary">
+        <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-success/20 to-emerald-500/20 flex items-center justify-center mx-auto">
+          <CheckCircle className="w-10 h-10 text-success" />
+        </div>
+        <h3 className="mt-6 text-2xl font-bold text-text-primary">
           Заявка отправлена!
         </h3>
         <p className="mt-2 text-text-secondary">
@@ -40,16 +42,16 @@ export function ContactForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
       <Input
-        label="Имя *"
+        label="Имя"
         placeholder="Как к вам обращаться?"
         error={errors.name?.message}
         {...register('name', { required: 'Введите имя' })}
       />
       
       <Input
-        label="Email *"
+        label="Email"
         type="email"
         placeholder="email@example.com"
         error={errors.email?.message}
@@ -63,7 +65,7 @@ export function ContactForm() {
       />
       
       <Input
-        label="Телефон *"
+        label="Телефон"
         type="tel"
         placeholder="+7 (999) 123-45-67"
         error={errors.phone?.message}
@@ -81,7 +83,7 @@ export function ContactForm() {
         <input
           type="checkbox"
           id="consent"
-          className="mt-1 w-4 h-4 rounded border-border text-accent focus:ring-accent"
+          className="mt-1 w-5 h-5 rounded-md border-border bg-secondary text-accent focus:ring-accent focus:ring-offset-0 focus:ring-offset-primary"
           {...register('consent', { required: true })}
         />
         <label htmlFor="consent" className="text-sm text-text-secondary">
@@ -95,7 +97,8 @@ export function ContactForm() {
         <p className="text-sm text-error">Необходимо согласие на обработку данных</p>
       )}
 
-      <Button type="submit" loading={isLoading} className="w-full">
+      <Button type="submit" loading={isLoading} className="w-full group">
+        <Send className="w-5 h-5 mr-2 group-hover:translate-x-1 transition-transform" />
         Отправить заявку
       </Button>
     </form>
