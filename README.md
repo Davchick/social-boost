@@ -1,35 +1,79 @@
-# social-boost
+# Diploma Demo Project
 
-This is a [Next.js](https://nextjs.org) project bootstrapped with [v0](https://v0.app).
+Учебный fullstack-проект для демонстрации на защите диплома:
 
-## Built with v0
+- `client`: React + Tailwind + TanStack Query
+- `server`: Node.js (Express) + PostgreSQL + Prisma
+- роли: `user` и `admin`
+- админка: простые таблицы + кнопки действий
 
-This repository is linked to a [v0](https://v0.app) project. You can continue developing by visiting the link below -- start new chats to make changes, and v0 will push commits directly to this repo. Every merge to `main` will automatically deploy.
+## 1) Подготовка
 
-[Continue working on v0 →](https://v0.app/chat/projects/prj_zC6z1phtWLdx8EmoQtuO2GfDALoP)
+Требуется локально:
 
-## Getting Started
+- Node.js 20+
+- PostgreSQL 14+
 
-First, run the development server:
+Создайте базу:
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
+```sql
+CREATE DATABASE ad_demo;
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 2) Настройка переменных
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Скопируйте шаблоны:
 
-## Learn More
+```bash
+cp server/.env.example server/.env
+cp client/.env.example client/.env
+```
 
-To learn more, take a look at the following resources:
+Проверьте `server/.env`:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-- [v0 Documentation](https://v0.app/docs) - learn about v0 and how to use it.
+- `DATABASE_URL` (ваш логин/пароль postgres)
+- `JWT_SECRET` (любая строка)
 
-<a href="https://v0.app/chat/api/kiro/clone/Davchick/social-boost" alt="Open in Kiro"><img src="https://pdgvvgmkdvyeydso.public.blob.vercel-storage.com/open%20in%20kiro.svg?sanitize=true" /></a>
+## 3) Установка и миграции
+
+```bash
+cd server
+npm install
+npm run prisma:generate
+npx prisma migrate dev --name init
+npm run prisma:seed
+```
+
+## 4) Запуск
+
+Терминал 1:
+
+```bash
+cd server
+npm run dev
+```
+
+Терминал 2:
+
+```bash
+cd client
+npm install
+npm run dev
+```
+
+## Демо-аккаунты
+
+- Админ: `admin@demo.local` / `admin123`
+- Клиент: `user@demo.local` / `user12345`
+
+## Что реализовано
+
+- регистрация/логин
+- личный кабинет клиента
+- создание заказа
+- список и карточка заказа
+- отмена нового заказа клиентом
+- админ-панель (пользователи + заказы)
+- смена статуса заказа админом
+- удаление заказа админом
+- обновление UI через `invalidateQueries` TanStack Query после мутаций
