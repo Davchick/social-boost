@@ -45,7 +45,7 @@ function ProfileForm({ user, onUpdate }) {
       />
       
       <Input
-        label="Email"
+        label="Эл. почта"
         type="email"
         placeholder="email@example.com"
         error={errors.email?.message}

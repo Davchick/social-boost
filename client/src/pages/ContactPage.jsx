@@ -4,11 +4,12 @@ import { Container } from '@/components/common/Container'
 import { Section } from '@/components/common/Section'
 import { Card } from '@/components/common/Card'
 import { ContactForm } from '@/components/sections/ContactForm'
+import { YandexMapEmbed } from '@/components/sections/YandexMapEmbed'
 import { CONTACTS } from '@/config/contacts'
 
 const contactInfo = [
   { icon: Phone, label: 'Телефон', value: CONTACTS.phone.display, href: `tel:${CONTACTS.phone.raw}` },
-  { icon: Mail, label: 'Email', value: CONTACTS.email.display, href: `mailto:${CONTACTS.email.raw}` },
+  { icon: Mail, label: 'Эл. почта', value: CONTACTS.email.display, href: `mailto:${CONTACTS.email.raw}` },
   { icon: MapPin, label: 'Адрес', value: CONTACTS.address },
   { icon: Clock, label: 'Время работы', value: CONTACTS.workHours },
 ]
@@ -58,6 +59,11 @@ export default function ContactPage() {
                 ))}
               </div>
             </div>
+          </div>
+
+          <div className="mt-12 lg:mt-16">
+            <h2 className="text-2xl font-semibold text-text-primary mb-6">Мы на карте</h2>
+            <YandexMapEmbed address={CONTACTS.address} />
           </div>
         </Container>
       </Section>

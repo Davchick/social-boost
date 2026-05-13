@@ -32,7 +32,7 @@ export function Hero({
             )}
           >
             <span className="inline-flex rounded-full h-2 w-2 bg-accent"></span>
-            <span className="text-sm text-text-secondary">SMM-агентство нового поколения</span>
+            <span className="text-sm text-text-secondary">Агентство социальных сетей нового поколения</span>
           </div>
 
           <h1 

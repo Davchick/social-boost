@@ -7,7 +7,7 @@ export const CONTACTS = {
     raw: 'hello@ledovskikh.ru',
     display: 'hello@ledovskikh.ru',
   },
-  address: 'Сочи, ул. Высокогорная, 40',
+  address: 'г. Сочи, ул. Высокогорная, д. 40',
   workHours: 'Пн–Пт: 9:00–18:00',
   socials: [
     { id: 'vk', label: 'ВКонтакте', href: 'https://vk.com/' },

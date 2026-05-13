@@ -12,7 +12,7 @@ const navigation = [
 ]
 
 const servicesLinks = [
-  { to: '/services/smm', label: 'SMM-продвижение' },
+  { to: '/services/smm', label: 'Продвижение в соцсетях' },
   { to: '/services/targeted', label: 'Таргетированная реклама' },
   { to: '/services/reels', label: 'Короткие видео' },
   { to: '/services/influence', label: 'Работа с блогерами' },
@@ -31,7 +31,7 @@ export function Footer() {
                 </span>
               </Link>
               <p className="mt-5 text-text-secondary text-sm leading-relaxed">
-                SMM-агентство нового поколения. Помогаем бизнесу расти в социальных сетях с измеримым результатом.
+                Агентство социальных сетей нового поколения. Помогаем бизнесу расти в социальных сетях с измеримым результатом.
               </p>
             </div>
 

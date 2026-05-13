@@ -82,7 +82,7 @@ export default function AdminPage() {
               <thead>
                 <tr className="border-b border-border">
                   <th className="text-left py-3 px-3 text-sm text-text-secondary">Имя</th>
-                  <th className="text-left py-3 px-3 text-sm text-text-secondary">Email</th>
+                  <th className="text-left py-3 px-3 text-sm text-text-secondary">Почта</th>
                   <th className="text-left py-3 px-3 text-sm text-text-secondary">Роль</th>
                 </tr>
               </thead>
@@ -91,7 +91,9 @@ export default function AdminPage() {
                   <tr key={user.id} className="border-b border-border last:border-0">
                     <td className="py-3 px-3">{user.name}</td>
                     <td className="py-3 px-3">{user.email}</td>
-                    <td className="py-3 px-3 uppercase text-xs">{user.role}</td>
+                    <td className="py-3 px-3 text-sm">
+                      {user.role === 'admin' ? 'Администратор' : 'Пользователь'}
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -109,7 +111,7 @@ export default function AdminPage() {
             <table className="w-full">
               <thead>
                 <tr className="border-b border-border">
-                  <th className="text-left py-3 px-3 text-sm text-text-secondary">ID</th>
+                  <th className="text-left py-3 px-3 text-sm text-text-secondary">№</th>
                   <th className="text-left py-3 px-3 text-sm text-text-secondary">Клиент</th>
                   <th className="text-left py-3 px-3 text-sm text-text-secondary">Услуга</th>
                   <th className="text-left py-3 px-3 text-sm text-text-secondary">Статус</th>

@@ -129,9 +129,9 @@ function PricingSection({ pricing }) {
   )
 }
 
-function RelatedCasesSection({ service }) {
+function RelatedCasesSection({ serviceSlug }) {
   const { ref, isVisible } = useScrollAnimation()
-  const relatedCases = cases.filter(c => c.service.includes(service)).slice(0, 3)
+  const relatedCases = cases.filter((c) => c.serviceSlugs?.includes(serviceSlug)).slice(0, 3)
 
   if (relatedCases.length === 0) return null
 
@@ -175,7 +175,7 @@ function RelatedCasesSection({ service }) {
   )
 }
 
-function FAQSection({ faq }) {
+function ServiceQuestionsSection({ items }) {
   const { ref, isVisible } = useScrollAnimation()
 
   return (
@@ -192,7 +192,7 @@ function FAQSection({ faq }) {
             isVisible && 'animate-fade-in'
           )}
         >
-          <Accordion items={faq} />
+          <Accordion items={items} />
         </div>
       </Container>
     </Section>
@@ -218,8 +218,8 @@ export default function ServiceDetailPage() {
       <FeaturesSection features={service.features} />
       <BenefitsSection benefits={service.benefits} />
       <PricingSection pricing={service.pricing} />
-      <RelatedCasesSection service={service.title} />
-      <FAQSection faq={service.faq} />
+      <RelatedCasesSection serviceSlug={service.slug} />
+      <ServiceQuestionsSection items={service.faq} />
       <CTASection 
         title="Готовы начать?"
         subtitle="Оставьте заявку и получите бесплатную консультацию"

@@ -44,8 +44,8 @@ export default function PrivacyPage() {
                 <li>Фамилия, имя, отчество</li>
                 <li>Адрес электронной почты</li>
                 <li>Номер телефона</li>
-                <li>IP-адрес</li>
-                <li>Данные cookie-файлов</li>
+                <li>Адрес устройства в сети Интернет</li>
+                <li>Данные, сохраняемые сайтом в браузере для распознавания повторных визитов</li>
                 <li>Информация о браузере и устройстве</li>
               </ul>
             </section>
@@ -106,7 +106,7 @@ export default function PrivacyPage() {
                 к Оператору:
               </p>
               <ul className="mt-4 space-y-2">
-                <li><strong>Email:</strong> info@ledovskikh.ru</li>
+                <li><strong>Почта:</strong> info@ledovskikh.ru</li>
                 <li><strong>Телефон:</strong> +7 (900) 123-45-67</li>
                 <li><strong>Адрес:</strong> Москва, ул. Примерная, д. 1</li>
               </ul>

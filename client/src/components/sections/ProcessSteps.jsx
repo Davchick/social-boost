@@ -6,7 +6,7 @@ import { cn } from '@/utils/cn'
 
 const steps = [
   { icon: ClipboardList, title: 'Аудит', description: 'Анализируем текущую ситуацию, конкурентов и целевую аудиторию' },
-  { icon: Lightbulb, title: 'Стратегия', description: 'Разрабатываем план действий и определяем KPI' },
+  { icon: Lightbulb, title: 'Стратегия', description: 'Разрабатываем план действий и определяем измеримые цели' },
   { icon: Rocket, title: 'Запуск', description: 'Настраиваем и запускаем рекламные кампании' },
   { icon: Settings, title: 'Оптимизация', description: 'Постоянно улучшаем показатели на основе данных' },
   { icon: FileText, title: 'Отчёт', description: 'Предоставляем прозрачную отчётность по результатам' },

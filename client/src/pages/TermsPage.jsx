@@ -123,7 +123,7 @@ export default function TermsPage() {
                 <p className="mt-2">ИНН: 75098234795693</p>
                 <p>ОГРНИП: 23847903827478</p>
                 <p className="mt-4">Адрес: Сочи, ул. Высокогорная, 40</p>
-                <p>Email: info@ledovskikh.ru</p>
+                <p>Почта: info@ledovskikh.ru</p>
                 <p>Телефон: +7 (938) 489-45-01</p>
               </div>
             </section>

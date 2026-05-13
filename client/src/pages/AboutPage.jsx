@@ -32,7 +32,7 @@ function MissionSection() {
               Наша миссия
             </h2>
             <p className="mt-6 text-lg text-text-secondary leading-relaxed">
-              Мы помогаем бизнесу расти в digital-пространстве. Наша задача — не просто настроить рекламу, 
+              Мы помогаем бизнесу расти в интернете. Наша задача — не просто настроить рекламу, 
               а выстроить систему привлечения клиентов, которая работает предсказуемо и масштабируемо.
             </p>
             <p className="mt-4 text-lg text-text-secondary leading-relaxed">

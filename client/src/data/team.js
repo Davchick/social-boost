@@ -30,7 +30,7 @@ export const team = [
   {
     id: '5',
     name: 'Елена Николаева',
-    role: 'SMM-менеджер',
+    role: 'Менеджер по соцсетям',
     initials: 'ЕН',
     photo: '/SMM-менеджер.png',
   },
