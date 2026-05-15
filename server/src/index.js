@@ -6,10 +6,12 @@ import { Role } from "@prisma/client";
 import { config } from "./config.js";
 import { prisma } from "./prisma.js";
 import {
+  formatContactRequest,
   formatOrder,
   formatUser,
   isValidEmail,
   isValidRuPhone,
+  mapContactRequestStatusToDb,
   mapStatusToDb,
   signToken,
 } from "./utils.js";
@@ -197,6 +199,19 @@ app.post("/api/contact", async (req, res) => {
     return res.status(400).json({ message: "Некорректное сообщение" });
   }
 
+  const trimmedMessage =
+    typeof message === "string" && message.trim() ? message.trim() : null;
+
+  await prisma.contactRequest.create({
+    data: {
+      name: String(name).trim(),
+      email: String(email).trim().toLowerCase(),
+      phone: String(phone).trim(),
+      message: trimmedMessage,
+      consent: Boolean(consent),
+    },
+  });
+
   return res.status(201).json({ success: true });
 });
 
@@ -250,6 +265,38 @@ app.get("/api/admin/users", authRequired, adminRequired, async (_req, res) => {
   });
   return res.json({ users: users.map(formatUser) });
 });
+
+app.get(
+  "/api/admin/contact-requests",
+  authRequired,
+  adminRequired,
+  async (_req, res) => {
+    const rows = await prisma.contactRequest.findMany({
+      orderBy: { createdAt: "desc" },
+    });
+    return res.json({ contactRequests: rows.map(formatContactRequest) });
+  },
+);
+
+app.patch(
+  "/api/admin/contact-requests/:id",
+  authRequired,
+  adminRequired,
+  async (req, res) => {
+    const id = Number(req.params.id);
+    const status = mapContactRequestStatusToDb(req.body.status);
+    if (!status) {
+      return res.status(400).json({ message: "Некорректный статус" });
+    }
+
+    const updated = await prisma.contactRequest.update({
+      where: { id },
+      data: { status },
+    });
+
+    return res.json({ contactRequest: formatContactRequest(updated) });
+  },
+);
 
 app.use((error, _req, res, _next) => {
   console.error(error);

@@ -62,6 +62,36 @@ export function formatUser(user) {
   };
 }
 
+export function mapContactRequestStatusToClient(status) {
+  const map = {
+    NEW: "new",
+    PROCESSED: "processed",
+  };
+  return map[status] || "new";
+}
+
+export function mapContactRequestStatusToDb(status) {
+  const map = {
+    new: "NEW",
+    processed: "PROCESSED",
+  };
+  return map[status];
+}
+
+export function formatContactRequest(row) {
+  return {
+    id: String(row.id),
+    name: row.name,
+    email: row.email,
+    phone: row.phone,
+    message: row.message,
+    consent: row.consent,
+    status: mapContactRequestStatusToClient(row.status),
+    createdAt: new Date(row.createdAt).toLocaleString("ru-RU"),
+    createdAtRaw: row.createdAt,
+  };
+}
+
 export function normalizePhoneDigits(value) {
   if (typeof value !== "string") return "";
   return value.replace(/\D/g, "");

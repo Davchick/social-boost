@@ -8,7 +8,7 @@ export default function ServicesPage() {
     <>
       <Hero
         title="Наши услуги"
-        subtitle="Комплексный интернет-маркетинг для роста вашего бизнеса"
+        subtitle="Соцсети, таргет, контекстная реклама и контент — комплексно для роста вашего бизнеса"
       />
       <ServicesGrid showHeader={false} />
       <ProcessSteps />

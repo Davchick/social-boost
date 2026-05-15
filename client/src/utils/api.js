@@ -96,4 +96,16 @@ export const api = {
     const response = await http.get("/admin/users");
     return response.data.users;
   },
+
+  getContactRequests: async () => {
+    const response = await http.get("/admin/contact-requests");
+    return response.data.contactRequests;
+  },
+
+  updateContactRequestStatus: async (id, status) => {
+    const response = await http.patch(`/admin/contact-requests/${id}`, {
+      status,
+    });
+    return response.data.contactRequest;
+  },
 };

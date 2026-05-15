@@ -36,7 +36,7 @@ export function ServicesGrid({ limit, showHeader = true, title, subtitle }) {
         {showHeader && (
           <SectionHeader 
             title={title || 'Наши услуги'} 
-            subtitle={subtitle || 'Комплексное продвижение в социальных сетях для роста вашего бизнеса'}
+            subtitle={subtitle || 'Соцсети, таргет, контекстная реклама и контент — подбираем связку под вашу задачу'}
           />
         )}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
