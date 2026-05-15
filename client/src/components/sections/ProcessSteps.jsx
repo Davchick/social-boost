@@ -27,12 +27,12 @@ export function ProcessSteps() {
           {/* Connection line */}
           <div className="hidden lg:block absolute top-12 left-0 right-0 h-0.5 bg-border" />
           
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8 grid-equal">
             {steps.map((step, index) => (
               <div 
                 key={index}
                 className={cn(
-                  'text-center relative',
+                  'text-center relative flex flex-col h-full',
                   'opacity-0 translate-y-5',
                   isVisible && 'animate-fade-in'
                 )}
@@ -45,7 +45,7 @@ export function ProcessSteps() {
                   {index + 1}
                 </div>
                 <h3 className="mt-6 font-semibold text-text-primary">{step.title}</h3>
-                <p className="mt-2 text-sm text-text-secondary">{step.description}</p>
+                <p className="mt-2 text-sm text-text-secondary flex-1">{step.description}</p>
               </div>
             ))}
           </div>

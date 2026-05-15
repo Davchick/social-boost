@@ -85,7 +85,7 @@ export function Hero({
 
           <div 
             className={cn(
-              'mt-12 grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 max-w-2xl mx-auto',
+              'mt-12 grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 max-w-2xl mx-auto grid-equal',
               'opacity-0',
               isVisible && 'animate-slide-up stagger-3'
             )}
@@ -95,7 +95,7 @@ export function Hero({
               { value: '5M+', label: 'Охват в месяц' },
               { value: '300%', label: 'Средняя окупаемость' },
             ].map((stat, i) => (
-              <div key={i} className="text-center bg-secondary border border-border rounded-xl py-4">
+              <div key={i} className="text-center bg-secondary border border-border rounded-xl py-4 h-full flex flex-col justify-center">
                 <div className="text-xl md:text-2xl font-semibold text-text-primary">{stat.value}</div>
                 <div className="text-sm text-text-muted mt-1">{stat.label}</div>
               </div>

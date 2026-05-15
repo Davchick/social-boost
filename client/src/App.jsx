@@ -16,7 +16,7 @@ import CaseDetailPage from '@/pages/CaseDetailPage'
 import ContactPage from '@/pages/ContactPage'
 import LoginPage from '@/pages/LoginPage'
 import RegisterPage from '@/pages/RegisterPage'
-import DashboardPage from '@/pages/DashboardPage'
+import DashboardIndex from '@/pages/DashboardIndex'
 import OrdersPage from '@/pages/OrdersPage'
 import NewOrderPage from '@/pages/NewOrderPage'
 import OrderDetailPage from '@/pages/OrderDetailPage'
@@ -58,7 +58,7 @@ function App() {
 
         {/* Dashboard Layout Routes */}
         <Route element={<DashboardLayout />}>
-          <Route path="/dashboard" element={<DashboardPage />} />
+          <Route path="/dashboard" element={<DashboardIndex />} />
           <Route path="/dashboard/orders" element={<OrdersPage />} />
           <Route path="/dashboard/orders/new" element={<NewOrderPage />} />
           <Route path="/dashboard/orders/:id" element={<OrderDetailPage />} />

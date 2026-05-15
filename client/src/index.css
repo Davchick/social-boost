@@ -4,6 +4,22 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer components {
+  /* Equal-height grid rows: stretch children to the tallest cell */
+  .grid-equal {
+    @apply items-stretch;
+  }
+
+  .grid-equal > * {
+    @apply h-full min-h-0;
+  }
+
+  /* Card fills grid cell and stacks content with footer at bottom */
+  .card-equal {
+    @apply h-full flex flex-col;
+  }
+}
+
 * {
   margin: 0;
   padding: 0;

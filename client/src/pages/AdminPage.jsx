@@ -1,10 +1,13 @@
-import { useMemo } from 'react'
+import { lazy, Suspense, useMemo } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useAuth } from '@/context/AuthContext'
 import { Card } from '@/components/common/Card'
 import { Button } from '@/components/common/Button'
 import { StatusBadge } from '@/components/common/Badge'
 import { api } from '@/utils/api'
+const AdminStatsCharts = lazy(() =>
+  import('@/components/admin/AdminStatsCharts').then((m) => ({ default: m.AdminStatsCharts }))
+)
 
 const nextStatusMap = {
   new: 'in-progress',
@@ -70,7 +73,7 @@ export default function AdminPage() {
 
   if (!isAdmin) {
     return (
-      <Card hover={false}>
+      <Card hover={false} className="h-full">
         <div className="py-8 text-center text-text-secondary">Доступно только администратору</div>
       </Card>
     )
@@ -78,16 +81,26 @@ export default function AdminPage() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-semibold text-text-primary">Админ-панель</h1>
+      <h1 className="text-2xl font-semibold text-text-primary">Статистика</h1>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <Card hover={false}><div className="text-text-secondary">Пользователи</div><div className="text-2xl font-semibold mt-1">{stats.users}</div></Card>
-        <Card hover={false}><div className="text-text-secondary">Всего заказов</div><div className="text-2xl font-semibold mt-1">{stats.orders}</div></Card>
-        <Card hover={false}><div className="text-text-secondary">Активные заказы</div><div className="text-2xl font-semibold mt-1">{stats.active}</div></Card>
-        <Card hover={false}><div className="text-text-secondary">Новые заявки с сайта</div><div className="text-2xl font-semibold mt-1">{stats.newLeads}</div></Card>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 grid-equal">
+        <Card hover={false} className="h-full"><div className="text-text-secondary">Пользователи</div><div className="text-2xl font-semibold mt-1">{stats.users}</div></Card>
+        <Card hover={false} className="h-full"><div className="text-text-secondary">Всего заявок</div><div className="text-2xl font-semibold mt-1">{stats.orders}</div></Card>
+        <Card hover={false} className="h-full"><div className="text-text-secondary">Активные заявки</div><div className="text-2xl font-semibold mt-1">{stats.active}</div></Card>
+        <Card hover={false} className="h-full"><div className="text-text-secondary">Новые заявки с сайта</div><div className="text-2xl font-semibold mt-1">{stats.newLeads}</div></Card>
       </div>
 
-      <Card hover={false}>
+      <Suspense
+        fallback={
+          <Card hover={false} className="h-full">
+            <div className="py-16 text-center text-text-secondary">Загрузка графиков...</div>
+          </Card>
+        }
+      >
+        <AdminStatsCharts orders={orders} contactRequests={contactRequests} />
+      </Suspense>
+
+      <Card hover={false} className="h-full">
         <h2 className="text-lg font-semibold text-text-primary mb-4">Пользователи</h2>
         {usersLoading ? (
           <div className="py-8 text-center text-text-secondary">Загрузка...</div>
@@ -117,7 +130,7 @@ export default function AdminPage() {
         )}
       </Card>
 
-      <Card hover={false}>
+      <Card hover={false} className="h-full">
         <h2 className="text-lg font-semibold text-text-primary mb-4">Заявки с формы обратной связи</h2>
         <p className="text-sm text-text-secondary mb-4">
           Все обращения сохраняются в базе. Писем и уведомлений во внешние сервисы в текущей версии нет — обработка ведётся здесь.
@@ -183,8 +196,8 @@ export default function AdminPage() {
         )}
       </Card>
 
-      <Card hover={false}>
-        <h2 className="text-lg font-semibold text-text-primary mb-4">Заказы</h2>
+      <Card hover={false} className="h-full">
+        <h2 className="text-lg font-semibold text-text-primary mb-4">Заявки</h2>
         {ordersLoading ? (
           <div className="py-8 text-center text-text-secondary">Загрузка...</div>
         ) : (

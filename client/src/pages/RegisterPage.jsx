@@ -1,25 +1,25 @@
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { Link, useNavigate } from 'react-router-dom'
-import { Eye, EyeOff, ShoppingCart, Clock, Repeat } from 'lucide-react'
+import { ShoppingCart, Clock, Repeat } from 'lucide-react'
 import { useAuth } from '@/context/AuthContext'
 import { Container } from '@/components/common/Container'
 import { Section } from '@/components/common/Section'
 import { Card } from '@/components/common/Card'
 import { Input } from '@/components/common/Input'
+import { PasswordInput } from '@/components/common/PasswordInput'
 import { Button } from '@/components/common/Button'
 import { api } from '@/utils/api'
 import { phoneFieldRulesRequired } from '@/utils/validation'
 import { PhoneInput } from '@/components/common/PhoneInput'
 
 const benefits = [
-  { icon: ShoppingCart, text: 'Отслеживание статуса заказов в реальном времени' },
+  { icon: ShoppingCart, text: 'Отслеживание статуса заявок в реальном времени' },
   { icon: Clock, text: 'Полная история всех ваших проектов' },
-  { icon: Repeat, text: 'Быстрое оформление повторных заказов' },
+  { icon: Repeat, text: 'Быстрое оформление повторных заявок' },
 ]
 
 export default function RegisterPage() {
-  const [showPassword, setShowPassword] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
   const { login } = useAuth()
@@ -34,7 +34,7 @@ export default function RegisterPage() {
     try {
       const result = await api.register(data)
       login(result.user, result.token)
-      navigate('/dashboard')
+      navigate(result.user?.role === 'admin' ? '/dashboard/admin' : '/dashboard')
     } catch (err) {
       setError('Ошибка при регистрации')
     } finally {
@@ -46,7 +46,7 @@ export default function RegisterPage() {
     <Section className="min-h-[calc(100vh-80px)] flex items-center">
       <Container>
         <div className="max-w-4xl mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start lg:items-stretch grid-equal">
             {/* Form */}
             <Card hover={false}>
               <h1 className="text-2xl font-semibold text-text-primary mb-6">
@@ -89,29 +89,18 @@ export default function RegisterPage() {
                   rules={phoneFieldRulesRequired}
                 />
                 
-                <div className="relative">
-                  <Input
-                    label="Пароль *"
-                    type={showPassword ? 'text' : 'password'}
-                    placeholder="Минимум 6 символов"
-                    error={errors.password?.message}
-                    {...register('password', { 
-                      required: 'Введите пароль',
-                      minLength: { value: 6, message: 'Минимум 6 символов' }
-                    })}
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-9 text-text-secondary hover:text-text-primary"
-                  >
-                    {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-                  </button>
-                </div>
+                <PasswordInput
+                  label="Пароль *"
+                  placeholder="Минимум 6 символов"
+                  error={errors.password?.message}
+                  {...register('password', { 
+                    required: 'Введите пароль',
+                    minLength: { value: 6, message: 'Минимум 6 символов' }
+                  })}
+                />
 
-                <Input
+                <PasswordInput
                   label="Повторите пароль *"
-                  type="password"
                   placeholder="Повторите пароль"
                   error={errors.confirmPassword?.message}
                   {...register('confirmPassword', { 
@@ -152,7 +141,7 @@ export default function RegisterPage() {
             </Card>
 
             {/* Benefits */}
-            <div className="hidden lg:block">
+            <div className="hidden lg:flex lg:flex-col lg:justify-center h-full">
               <h2 className="text-2xl font-semibold text-text-primary mb-6">
                 Что даёт регистрация
               </h2>

@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 import { useController } from 'react-hook-form'
 import { cn } from '@/utils/cn'
+import { FIELD_INPUT_CLASS, FIELD_LABEL_CLASS } from '@/utils/fieldStyles'
 import { formatRuPhone, normalizeRuPhoneDigits } from '@/utils/validation'
 
 function isAllowedControlKey(key) {
@@ -91,7 +92,7 @@ export function PhoneInput({
   return (
     <div className="w-full">
       {label && (
-        <label className="block text-sm font-medium text-text-secondary mb-2">
+        <label className={FIELD_LABEL_CLASS}>
           {label}
         </label>
       )}
@@ -105,10 +106,7 @@ export function PhoneInput({
         autoComplete="tel"
         placeholder={placeholder}
         className={cn(
-          'w-full px-4 py-3 rounded-lg border border-border bg-secondary text-text-primary',
-          'placeholder:text-text-muted',
-          'focus:outline-none focus:border-accent',
-          'transition-colors duration-200',
+          FIELD_INPUT_CLASS,
           errorMessage && 'border-error focus:border-error',
           className
         )}

@@ -39,7 +39,7 @@ export default function CasesPage() {
   return (
     <>
       <Hero
-        title="Наши кейсы"
+        title="Наши работы"
         subtitle="Реальные результаты для реальных клиентов"
       />
       <Section>

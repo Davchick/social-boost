@@ -23,7 +23,7 @@ export default function ContactPage() {
       />
       <Section>
         <Container>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start lg:items-stretch grid-equal">
             {/* Form */}
             <Card hover={false}>
               <h2 className="text-2xl font-semibold text-text-primary mb-6">

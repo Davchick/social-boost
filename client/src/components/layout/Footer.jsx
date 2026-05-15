@@ -7,7 +7,7 @@ const navigation = [
   { to: '/', label: 'Главная' },
   { to: '/about', label: 'О нас' },
   { to: '/services', label: 'Услуги' },
-  { to: '/cases', label: 'Кейсы' },
+  { to: '/cases', label: 'Портфолио' },
   { to: '/contact', label: 'Контакты' },
 ]
 

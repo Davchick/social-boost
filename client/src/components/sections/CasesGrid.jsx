@@ -16,13 +16,13 @@ export function CasesGrid({ cases, industryLabelById }) {
   }
 
   return (
-    <div ref={ref} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div ref={ref} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 grid-equal">
       {cases.map((caseItem, index) => (
         <Link 
           key={caseItem.id} 
           to={`/cases/${caseItem.slug}`}
           className={cn(
-            'group opacity-0',
+            'group block h-full opacity-0',
             isVisible && 'animate-slide-up'
           )}
           style={{ animationDelay: `${index * 0.1}s` }}

@@ -13,7 +13,7 @@ export default function HomePage() {
         title="Прокачиваем ваши социальные сети"
         subtitle="Агентство социальных сетей нового поколения. Создаём вирусный контент, запускаем рекламу с подбором аудитории и работаем с блогерами. Результат — рост продаж и узнаваемости."
         primaryCta={{ label: 'Начать проект', href: '/contact' }}
-        secondaryCta={{ label: 'Смотреть кейсы', href: '/cases' }}
+        secondaryCta={{ label: 'Смотреть портфолио', href: '/cases' }}
       />
       <ClientsMarquee />
       <ServicesGrid limit={4} />

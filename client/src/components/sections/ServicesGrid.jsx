@@ -39,7 +39,7 @@ export function ServicesGrid({ limit, showHeader = true, title, subtitle }) {
             subtitle={subtitle || 'Соцсети, таргет, контекстная реклама и контент — подбираем связку под вашу задачу'}
           />
         )}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 grid-equal">
           {displayServices.map((service, index) => {
             const Icon = iconMap[service.icon]
             const gradient = gradientMap[service.id] || 'from-accent to-accent-secondary'
@@ -50,17 +50,17 @@ export function ServicesGrid({ limit, showHeader = true, title, subtitle }) {
                 key={service.id} 
                 to={`/services/${service.slug}`}
                 className={cn(
-                  'opacity-0',
+                  'block h-full opacity-0',
                   isVisible && 'animate-slide-up',
                 )}
                 style={{ animationDelay: `${index * 0.1}s` }}
               >
                 <div className={cn(
-                  'group relative p-6 md:p-7 rounded-2xl bg-secondary border border-border shadow-card',
+                  'group relative p-6 md:p-7 rounded-2xl bg-secondary border border-border shadow-card h-full card-equal',
                   'transition-all duration-200 hover:-translate-y-0.5',
                   glow
                 )}>
-                  <div className="relative flex items-start gap-5">
+                  <div className="relative flex items-start gap-5 flex-1">
                     <div className={cn(
                       'w-12 h-12 rounded-xl bg-gradient-to-br flex items-center justify-center flex-shrink-0',
                       'transition-transform duration-200 group-hover:scale-105',

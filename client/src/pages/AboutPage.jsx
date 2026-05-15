@@ -69,18 +69,18 @@ function ValuesSection() {
           title="Наши ценности" 
           subtitle="Принципы, которые лежат в основе нашей работы"
         />
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 grid-equal">
           {values.map((value, index) => (
             <Card 
               key={index}
               className={cn(
-                'opacity-0 translate-y-5',
+                'h-full card-equal opacity-0 translate-y-5',
                 isVisible && 'animate-fade-in'
               )}
               style={{ animationDelay: `${index * 0.1}s` }}
             >
-              <div className="flex items-start gap-4">
-                <div className="w-12 h-12 bg-accent/10 rounded-16 flex items-center justify-center flex-shrink-0">
+              <div className="flex items-start gap-4 flex-1">
+                <div className="w-12 h-12 bg-accent/10 rounded-xl flex items-center justify-center flex-shrink-0">
                   <value.icon className="w-6 h-6 text-accent" />
                 </div>
                 <div>

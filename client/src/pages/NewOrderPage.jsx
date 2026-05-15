@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { Link } from 'react-router-dom'
+import { Link, Navigate } from 'react-router-dom'
+import { useAuth } from '@/context/AuthContext'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { Check, ArrowLeft, ArrowRight, CheckCircle, Search, Target, TrendingUp, Users } from 'lucide-react'
 import { Card } from '@/components/common/Card'
@@ -161,14 +162,14 @@ function Confirmation({ service, formData, orderId }) {
       <div className="text-center py-8">
         <CheckCircle className="w-20 h-20 text-success mx-auto" />
         <h2 className="mt-6 text-2xl font-semibold text-text-primary">
-          Заказ создан!
+          Заявка создана!
         </h2>
         <p className="mt-4 text-text-secondary">
           Мы свяжемся с вами в течение часа для уточнения деталей.
         </p>
         <div className="mt-8 flex justify-center gap-4">
           <Link to={`/dashboard/orders/${orderId}`}>
-            <Button>Перейти к заказу</Button>
+            <Button>Перейти к заявке</Button>
           </Link>
           <Link to="/dashboard">
             <Button variant="secondary">В личный кабинет</Button>
@@ -180,7 +181,7 @@ function Confirmation({ service, formData, orderId }) {
 
   return (
     <div className="space-y-6">
-      <h3 className="text-lg font-semibold text-text-primary">Проверьте данные заказа</h3>
+      <h3 className="text-lg font-semibold text-text-primary">Проверьте данные заявки</h3>
       
       <div className="p-4 bg-secondary rounded-12">
         <div className="text-sm text-text-secondary">Услуга</div>
@@ -218,7 +219,9 @@ function Confirmation({ service, formData, orderId }) {
 }
 
 export default function NewOrderPage() {
+  const { isAdmin } = useAuth()
   const [step, setStep] = useState(1)
+  const [submitError, setSubmitError] = useState('')
   const [selectedService, setSelectedService] = useState(null)
   const [orderId, setOrderId] = useState(null)
   const queryClient = useQueryClient()
@@ -262,6 +265,7 @@ export default function NewOrderPage() {
   }
 
   const handleFinalSubmit = async () => {
+    setSubmitError('')
     try {
       const formData = getValues()
       await createOrderMutation.mutateAsync({
@@ -269,15 +273,19 @@ export default function NewOrderPage() {
         ...formData,
       })
     } catch (error) {
-      console.error('Error creating order:', error)
+      setSubmitError(error.message || 'Не удалось создать заявку')
     }
+  }
+
+  if (isAdmin) {
+    return <Navigate to="/dashboard/admin" replace />
   }
 
   return (
     <div className="max-w-3xl mx-auto">
       <Card hover={false}>
         <h1 className="text-2xl font-semibold text-text-primary mb-2">
-          Оформление заказа
+          Оформление заявки
         </h1>
         <p className="text-text-secondary mb-8">
           Заполните форму и мы свяжемся с вами для уточнения деталей
@@ -330,13 +338,18 @@ export default function NewOrderPage() {
               orderId={orderId}
             />
             {!orderId && (
-              <div className="mt-8 flex justify-between">
-                <Button variant="secondary" onClick={handleBack}>
-                  <ArrowLeft className="w-4 h-4 mr-2" /> Назад
-                </Button>
-                <Button onClick={handleFinalSubmit} loading={createOrderMutation.isPending}>
-                  Отправить заказ
-                </Button>
+              <div className="mt-8 space-y-4">
+                {submitError && (
+                  <p className="text-sm text-error text-center">{submitError}</p>
+                )}
+                <div className="flex justify-between">
+                  <Button variant="secondary" onClick={handleBack}>
+                    <ArrowLeft className="w-4 h-4 mr-2" /> Назад
+                  </Button>
+                  <Button onClick={handleFinalSubmit} loading={createOrderMutation.isPending}>
+                    Отправить заявку
+                  </Button>
+                </div>
               </div>
             )}
           </>

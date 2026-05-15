@@ -55,16 +55,20 @@ export const api = {
   },
 
   createOrder: async (data) => {
-    const payload = {
-      service: data.service?.title || data.service,
-      region: data.region,
-      budget: data.budget,
-      timeline: data.timeline,
-      description: data.description,
-      wishes: data.wishes,
-    };
-    const response = await http.post("/orders", payload);
-    return response.data;
+    try {
+      const payload = {
+        service: data.service?.title || data.service,
+        region: data.region,
+        budget: data.budget,
+        timeline: data.timeline,
+        description: data.description,
+        wishes: data.wishes,
+      };
+      const response = await http.post("/orders", payload);
+      return response.data;
+    } catch (error) {
+      throw new Error(getErrorMessage(error, "Не удалось создать заявку"));
+    }
   },
 
   cancelOrder: async (id) => {
@@ -83,13 +87,37 @@ export const api = {
   },
 
   updateProfile: async (data) => {
-    const response = await http.patch("/users/me", data);
-    return response.data;
+    try {
+      const response = await http.patch("/users/me", {
+        name: data.name?.trim(),
+        email: data.email?.trim().toLowerCase(),
+        phone: data.phone,
+      });
+      return response.data;
+    } catch (error) {
+      throw new Error(getErrorMessage(error, "Не удалось сохранить данные"));
+    }
   },
 
   changePassword: async (data) => {
-    const response = await http.patch("/users/me/password", data);
-    return response.data;
+    try {
+      const response = await http.patch("/users/me/password", {
+        currentPassword: data.currentPassword,
+        newPassword: data.newPassword,
+      });
+      return response.data;
+    } catch (error) {
+      throw new Error(getErrorMessage(error, "Не удалось сменить пароль"));
+    }
+  },
+
+  deleteAccount: async () => {
+    try {
+      const response = await http.delete("/users/me");
+      return response.data;
+    } catch (error) {
+      throw new Error(getErrorMessage(error, "Не удалось удалить аккаунт"));
+    }
   },
 
   getAdminUsers: async () => {

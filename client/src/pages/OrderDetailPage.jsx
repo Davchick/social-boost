@@ -99,10 +99,10 @@ export default function OrderDetailPage() {
     return (
       <Card>
         <div className="text-center py-12">
-          <p className="text-text-secondary">Заказ не найден</p>
+          <p className="text-text-secondary">Заявка не найдена</p>
           <div className="mt-4">
             <Link to="/dashboard/orders">
-              <Button size="small">К списку заказов</Button>
+              <Button size="small">К списку заявок</Button>
             </Link>
           </div>
         </div>
@@ -119,11 +119,11 @@ export default function OrderDetailPage() {
             to="/dashboard/orders" 
             className="text-accent hover:underline text-sm flex items-center gap-1 mb-2"
           >
-            <ArrowLeft className="w-4 h-4" /> К списку заказов
+            <ArrowLeft className="w-4 h-4" /> К списку заявок
           </Link>
           <div className="flex items-center gap-3">
             <h1 className="text-2xl font-semibold text-text-primary">
-              Заказ #{order.id}
+              Заявка #{order.id}
             </h1>
             <StatusBadge status={order.status} />
           </div>
@@ -157,7 +157,7 @@ export default function OrderDetailPage() {
         <div className="lg:col-span-2 space-y-6">
           <Card hover={false}>
             <h2 className="text-lg font-semibold text-text-primary mb-4">
-              Детали заказа
+              Детали заявки
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="p-4 bg-secondary rounded-12">
@@ -189,7 +189,7 @@ export default function OrderDetailPage() {
         <div>
           <Card hover={false}>
             <h2 className="text-lg font-semibold text-text-primary mb-6">
-              Статус заказа
+              Статус заявки
             </h2>
             <OrderTimeline timeline={timeline} />
           </Card>

@@ -25,19 +25,19 @@ export default function DashboardPage() {
           Добро пожаловать, {user?.name?.split(' ')[0] || 'Пользователь'}!
         </h1>
         <p className="mt-2 text-text-secondary">
-          Управляйте заказами и отслеживайте их статус
+          Управляйте заявками и отслеживайте их статус
         </p>
       </div>
 
       {/* Active orders */}
       <Card hover={false}>
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-xl font-semibold text-text-primary">Активные заказы</h2>
+          <h2 className="text-xl font-semibold text-text-primary">Активные заявки</h2>
           <Link 
             to="/dashboard/orders" 
             className="text-accent hover:underline text-sm flex items-center gap-1"
           >
-            Все заказы <ArrowRight className="w-4 h-4" />
+            Все заявки <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
 
@@ -52,7 +52,7 @@ export default function DashboardPage() {
                 className="flex items-center justify-between p-4 bg-secondary rounded-12 hover:bg-border/50 transition-colors"
               >
                 <div>
-                  <div className="font-medium text-text-primary">Заказ #{order.id}</div>
+                  <div className="font-medium text-text-primary">Заявка #{order.id}</div>
                   <div className="text-sm text-text-secondary">{order.service}</div>
                 </div>
                 <div className="flex items-center gap-4">
@@ -64,10 +64,10 @@ export default function DashboardPage() {
           </div>
         ) : (
           <div className="py-8 text-center text-text-secondary">
-            У вас пока нет активных заказов
+            У вас пока нет активных заявок
             <div className="mt-4">
               <Link to="/dashboard/orders/new">
-                <Button size="small">Создать заказ</Button>
+                <Button size="small">Создать заявку</Button>
               </Link>
             </div>
           </div>
@@ -88,7 +88,7 @@ export default function DashboardPage() {
                 className="flex items-center justify-between p-4 bg-secondary rounded-12 hover:bg-border/50 transition-colors"
               >
                 <div>
-                  <div className="font-medium text-text-primary">Заказ #{order.id}</div>
+                  <div className="font-medium text-text-primary">Заявка #{order.id}</div>
                   <div className="text-sm text-text-secondary">{order.service}</div>
                 </div>
                 <div className="flex items-center gap-4">

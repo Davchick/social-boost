@@ -3,21 +3,25 @@ import { useAuth } from '@/context/AuthContext'
 import { Header } from './Header'
 import { Footer } from './Footer'
 import { Container } from '@/components/common/Container'
-import { LayoutDashboard, ShoppingCart, PlusCircle, User, Shield } from 'lucide-react'
+import { LayoutDashboard, ClipboardList, PlusCircle, User, BarChart3 } from 'lucide-react'
 import { cn } from '@/utils/cn'
 
-const baseSidebarLinks = [
+const userSidebarLinks = [
   { to: '/dashboard', label: 'Сводка', icon: LayoutDashboard, end: true },
-  { to: '/dashboard/orders', label: 'Мои заказы', icon: ShoppingCart },
-  { to: '/dashboard/orders/new', label: 'Новый заказ', icon: PlusCircle },
+  { to: '/dashboard/orders', label: 'Мои заявки', icon: ClipboardList },
+  { to: '/dashboard/orders/new', label: 'Новая заявка', icon: PlusCircle },
+  { to: '/dashboard/profile', label: 'Профиль', icon: User },
+]
+
+const adminSidebarLinks = [
+  { to: '/dashboard/admin', label: 'Статистика', icon: BarChart3 },
+  { to: '/dashboard/orders', label: 'Заявки', icon: ClipboardList },
   { to: '/dashboard/profile', label: 'Профиль', icon: User },
 ]
 
 export function DashboardLayout() {
   const { isAuthenticated, isLoading, isAdmin } = useAuth()
-  const sidebarLinks = isAdmin
-    ? [...baseSidebarLinks, { to: '/dashboard/admin', label: 'Админка', icon: Shield }]
-    : baseSidebarLinks
+  const sidebarLinks = isAdmin ? adminSidebarLinks : userSidebarLinks
 
   if (isLoading) {
     return (

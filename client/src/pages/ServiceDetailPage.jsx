@@ -87,13 +87,13 @@ function PricingSection({ pricing }) {
           title="Тарифы" 
           subtitle="Выберите подходящий вариант или обсудите индивидуальные условия"
         />
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 grid-equal">
           {pricing.map((plan, index) => (
             <Card 
               key={index}
               className={cn(
                 index === 1 && 'ring-2 ring-accent',
-                'opacity-0 translate-y-5',
+                'h-full card-equal opacity-0 translate-y-5',
                 isVisible && 'animate-fade-in'
               )}
               style={{ animationDelay: `${index * 0.1}s` }}
@@ -111,13 +111,13 @@ function PricingSection({ pricing }) {
                   </li>
                 ))}
               </ul>
-              <div className="mt-6">
+              <div className="mt-auto pt-6">
                 <Link to="/contact">
                   <Button 
                     variant={index === 1 ? 'primary' : 'secondary'} 
                     className="w-full"
                   >
-                    Заказать
+                    Оставить заявку
                   </Button>
                 </Link>
               </div>
@@ -139,21 +139,21 @@ function RelatedCasesSection({ serviceSlug }) {
     <Section ref={ref} background="secondary">
       <Container>
         <SectionHeader 
-          title="Кейсы по услуге" 
+          title="Работы по услуге" 
           subtitle="Примеры наших работ"
         />
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 grid-equal">
           {relatedCases.map((caseItem, index) => (
             <Link 
               key={caseItem.id} 
               to={`/cases/${caseItem.slug}`}
               className={cn(
-                'opacity-0 translate-y-5',
+                'block h-full opacity-0 translate-y-5',
                 isVisible && 'animate-fade-in'
               )}
               style={{ animationDelay: `${index * 0.1}s` }}
             >
-              <Card className="group">
+              <Card className="group h-full card-equal">
                 <div className="aspect-video bg-secondary rounded-12 overflow-hidden mb-4">
                   <img 
                     src={caseItem.image} 

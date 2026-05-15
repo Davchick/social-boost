@@ -5,6 +5,7 @@ import { useQuery } from '@tanstack/react-query'
 import { Card } from '@/components/common/Card'
 import { Button } from '@/components/common/Button'
 import { StatusBadge } from '@/components/common/Badge'
+import { useAuth } from '@/context/AuthContext'
 import { api } from '@/utils/api'
 import { cn } from '@/utils/cn'
 
@@ -16,6 +17,7 @@ const statusFilters = [
 ]
 
 export default function OrdersPage() {
+  const { isAdmin } = useAuth()
   const [activeFilter, setActiveFilter] = useState('all')
   const { data: orders = [], isLoading } = useQuery({
     queryKey: ['orders'],
@@ -30,13 +32,17 @@ export default function OrdersPage() {
     <div className="space-y-6">
       {/* Header */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-        <h1 className="text-2xl font-semibold text-text-primary">Мои заказы</h1>
-        <Link to="/dashboard/orders/new">
-          <Button size="small">
-            <Plus className="w-4 h-4 mr-2" />
-            Новый заказ
-          </Button>
-        </Link>
+        <h1 className="text-2xl font-semibold text-text-primary">
+          {isAdmin ? 'Заявки' : 'Мои заявки'}
+        </h1>
+        {!isAdmin && (
+          <Link to="/dashboard/orders/new">
+            <Button size="small">
+              <Plus className="w-4 h-4 mr-2" />
+              Новая заявка
+            </Button>
+          </Link>
+        )}
       </div>
 
       {/* Filters */}
@@ -99,15 +105,18 @@ export default function OrdersPage() {
           </div>
         ) : (
           <div className="py-12 text-center text-text-secondary">
-            {activeFilter === 'all' 
-              ? 'У вас пока нет заказов'
-              : 'Нет заказов с таким статусом'
-            }
-            <div className="mt-4">
-              <Link to="/dashboard/orders/new">
-                <Button size="small">Создать заказ</Button>
-              </Link>
-            </div>
+            {activeFilter === 'all'
+              ? isAdmin
+                ? 'Пока нет заявок'
+                : 'У вас пока нет заявок'
+              : 'Нет заявок с таким статусом'}
+            {!isAdmin && (
+              <div className="mt-4">
+                <Link to="/dashboard/orders/new">
+                  <Button size="small">Создать заявку</Button>
+                </Link>
+              </div>
+            )}
           </div>
         )}
       </Card>

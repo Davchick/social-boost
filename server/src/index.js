@@ -92,7 +92,13 @@ app.get("/api/auth/me", authRequired, async (req, res) => {
 });
 
 app.patch("/api/users/me", authRequired, async (req, res) => {
-  const { name, email, phone } = req.body;
+  const name = String(req.body.name || "").trim();
+  const email = String(req.body.email || "").trim().toLowerCase();
+  const phone =
+    req.body.phone === undefined || req.body.phone === null || req.body.phone === ""
+      ? null
+      : String(req.body.phone).trim();
+
   if (!name || !email) {
     return res.status(400).json({ message: "Имя и email обязательны" });
   }
@@ -101,6 +107,13 @@ app.patch("/api/users/me", authRequired, async (req, res) => {
   }
   if (phone && !isValidRuPhone(phone)) {
     return res.status(400).json({ message: "Некорректный телефон" });
+  }
+
+  if (email !== req.user.email) {
+    const existing = await prisma.user.findUnique({ where: { email } });
+    if (existing) {
+      return res.status(400).json({ message: "Этот email уже занят" });
+    }
   }
 
   const user = await prisma.user.update({
@@ -118,6 +131,16 @@ app.patch("/api/users/me/password", authRequired, async (req, res) => {
       .status(400)
       .json({ message: "Текущий и новый пароль обязательны" });
   }
+  if (String(newPassword).length < 6) {
+    return res
+      .status(400)
+      .json({ message: "Новый пароль должен быть не короче 6 символов" });
+  }
+  if (currentPassword === newPassword) {
+    return res
+      .status(400)
+      .json({ message: "Новый пароль должен отличаться от текущего" });
+  }
 
   const valid = await bcrypt.compare(currentPassword, req.user.passwordHash);
   if (!valid) {
@@ -130,6 +153,11 @@ app.patch("/api/users/me/password", authRequired, async (req, res) => {
     data: { passwordHash },
   });
 
+  return res.json({ success: true });
+});
+
+app.delete("/api/users/me", authRequired, async (req, res) => {
+  await prisma.user.delete({ where: { id: req.user.id } });
   return res.json({ success: true });
 });
 
@@ -151,7 +179,7 @@ app.get("/api/orders/:id", authRequired, async (req, res) => {
   });
 
   if (!order) {
-    return res.status(404).json({ message: "Заказ не найден" });
+    return res.status(404).json({ message: "Заявка не найдена" });
   }
 
   const isAdmin = req.user.role === "ADMIN";
@@ -163,6 +191,12 @@ app.get("/api/orders/:id", authRequired, async (req, res) => {
 });
 
 app.post("/api/orders", authRequired, async (req, res) => {
+  if (req.user.role === "ADMIN") {
+    return res
+      .status(403)
+      .json({ message: "Администратор не может создавать заявки" });
+  }
+
   const { service, region, budget, timeline, description, wishes } = req.body;
 
   if (!service || !region || !budget || !description) {
@@ -235,13 +269,13 @@ app.patch("/api/orders/:id/cancel", authRequired, async (req, res) => {
   const orderId = Number(req.params.id);
   const order = await prisma.order.findUnique({ where: { id: orderId } });
   if (!order) {
-    return res.status(404).json({ message: "Заказ не найден" });
+    return res.status(404).json({ message: "Заявка не найдена" });
   }
   if (order.userId !== req.user.id) {
     return res.status(403).json({ message: "Недостаточно прав" });
   }
   if (order.status !== "NEW") {
-    return res.status(400).json({ message: "Можно отменить только новый заказ" });
+    return res.status(400).json({ message: "Можно отменить только новую заявку" });
   }
 
   const updated = await prisma.order.update({

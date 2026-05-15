@@ -17,14 +17,14 @@ export function Stats() {
   return (
     <Section ref={ref}>
       <Container>
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 grid-equal">
           {stats.map((stat, index) => {
             const Icon = stat.icon
             return (
               <div 
                 key={index}
                 className={cn(
-                  'group relative p-5 md:p-6 rounded-2xl bg-secondary border border-border shadow-card',
+                  'group relative p-5 md:p-6 rounded-2xl bg-secondary border border-border shadow-card h-full card-equal',
                   'hover:-translate-y-0.5 transition-all duration-200 hover:shadow-card-hover',
                   'opacity-0',
                   isVisible && 'animate-slide-up'
