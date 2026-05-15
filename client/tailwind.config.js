@@ -27,6 +27,7 @@ export default {
       },
       maxWidth: {
         'container': '1280px',
+        'container-wide': '1600px',
       },
       borderRadius: {
         'pill': '9999px',

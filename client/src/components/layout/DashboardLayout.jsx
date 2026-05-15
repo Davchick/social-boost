@@ -1,4 +1,4 @@
-import { NavLink, Outlet, Navigate } from 'react-router-dom'
+import { NavLink, Outlet, Navigate, useLocation } from 'react-router-dom'
 import { useAuth } from '@/context/AuthContext'
 import { Header } from './Header'
 import { Footer } from './Footer'
@@ -21,7 +21,9 @@ const adminSidebarLinks = [
 
 export function DashboardLayout() {
   const { isAuthenticated, isLoading, isAdmin } = useAuth()
+  const location = useLocation()
   const sidebarLinks = isAdmin ? adminSidebarLinks : userSidebarLinks
+  const wideAdminLayout = isAdmin && location.pathname.startsWith('/dashboard/admin')
 
   if (isLoading) {
     return (
@@ -39,7 +41,7 @@ export function DashboardLayout() {
     <div className="min-h-screen flex flex-col bg-primary">
       <Header />
       <main className="flex-1 pt-20">
-        <Container className="py-6 md:py-10">
+        <Container className={cn('py-6 md:py-10', wideAdminLayout && 'max-w-container-wide')}>
           <div className="flex flex-col lg:flex-row gap-8">
             <aside className="lg:w-64 flex-shrink-0">
               <nav className="sticky top-24 bg-secondary rounded-xl border border-border p-3 shadow-card">

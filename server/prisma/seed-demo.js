@@ -5,7 +5,7 @@
  *   npm run prisma:seed:demo
  *
  * По умолчанию удаляет все заявки (Order) и обращения с сайта (ContactRequest),
- * затем создаёт ~50 записей каждого типа + демо-клиентов.
+ * затем создаёт демо-заявки и обращения с динамикой за 90 дней + демо-клиентов.
  */
 import dotenv from "dotenv";
 import bcrypt from "bcryptjs";
@@ -22,7 +22,9 @@ import {
   CONTACT_MESSAGES,
   pick,
   daysAgo,
+  distributeDayOffsets,
   demoClientEmail,
+  contactLeadEmail,
   formatPhone,
   personName,
 } from "./demo-data.js";
@@ -46,6 +48,21 @@ const ORDER_STATUS_SEQUENCE = [
 function parseArgs() {
   const reset = !process.argv.includes("--no-reset");
   return { reset };
+}
+
+async function removeLegacyDemoClients() {
+  const deleted = await prisma.user.deleteMany({
+    where: {
+      role: Role.USER,
+      email: {
+        startsWith: "client",
+        endsWith: "@demo.local",
+      },
+    },
+  });
+  if (deleted.count > 0) {
+    console.log(`Удалены устаревшие демо-аккаунты client*@demo.local: ${deleted.count}`);
+  }
 }
 
 async function ensureCoreUsers(passwordHash) {
@@ -100,11 +117,22 @@ async function ensureCoreUsers(passwordHash) {
   return { admin, mainClient, demoClients };
 }
 
+const orderDayOffsets = distributeDayOffsets(
+  DEMO.ORDER_COUNT,
+  DEMO.HISTORY_DAYS,
+  1,
+);
+const contactDayOffsets = distributeDayOffsets(
+  DEMO.CONTACT_COUNT,
+  DEMO.HISTORY_DAYS,
+  5,
+);
+
 function buildOrderPayload(index, userId) {
   const service = pick(SERVICES, index);
   const region = pick(REGIONS, index + 2);
   const company = pick(COMPANY_HINTS, index);
-  const dayOffset = index % 28;
+  const dayOffset = orderDayOffsets[index] ?? 0;
 
   return {
     userId,
@@ -122,13 +150,12 @@ function buildOrderPayload(index, userId) {
 
 function buildContactPayload(index) {
   const name = personName(index + 10);
-  const email = `lead${String(index + 1).padStart(2, "0")}@example.ru`;
-  const dayOffset = (index * 2) % 25;
+  const email = contactLeadEmail(index);
+  const dayOffset = contactDayOffsets[index] ?? 0;
 
   return {
     name,
     email,
-    phone: formatPhone(100 + index),
     message: pick(CONTACT_MESSAGES, index),
     consent: true,
     status: index % 3 === 0 ? ContactRequestStatus.PROCESSED : ContactRequestStatus.NEW,
@@ -143,6 +170,7 @@ async function main() {
 
   console.log("=== Демо-наполнение БД ===\n");
 
+  await removeLegacyDemoClients();
   const { admin, mainClient, demoClients } = await ensureCoreUsers(demoPasswordHash);
   const allClients = [mainClient, ...demoClients];
 
@@ -190,7 +218,7 @@ async function main() {
   console.log("Аккаунты для входа:");
   console.log(`  Админ:   ${DEMO.ADMIN_EMAIL} / admin123`);
   console.log(`  Клиент:  ${DEMO.MAIN_CLIENT_EMAIL} / user12345`);
-  console.log(`  Клиенты: client01@demo.local … client${String(DEMO.CLIENT_COUNT).padStart(2, "0")}@demo.local / ${DEMO.DEMO_PASSWORD}`);
+  console.log(`  Демо-клиенты: ${demoClientEmail(1)} … ${demoClientEmail(DEMO.CLIENT_COUNT)} / ${DEMO.DEMO_PASSWORD}`);
   console.log(`\nВ базе: пользователей (клиентов) — ${userCount}, заявок — ${orderCount}, обращений — ${contactCount}`);
   console.log("Статусы заявок:");
   for (const row of statusGroups) {

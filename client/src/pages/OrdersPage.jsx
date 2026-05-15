@@ -1,10 +1,11 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Plus, ArrowRight } from 'lucide-react'
+import { Plus } from 'lucide-react'
 import { useQuery } from '@tanstack/react-query'
 import { Card } from '@/components/common/Card'
 import { Button } from '@/components/common/Button'
-import { StatusBadge } from '@/components/common/Badge'
+import { OrdersList } from '@/components/common/OrdersList'
+import { usePaginatedList } from '@/hooks/usePaginatedList'
 import { useAuth } from '@/context/AuthContext'
 import { api } from '@/utils/api'
 import { cn } from '@/utils/cn'
@@ -24,9 +25,23 @@ export default function OrdersPage() {
     queryFn: api.getOrders,
   })
 
-  const filteredOrders = activeFilter === 'all' 
-    ? orders 
-    : orders.filter(o => o.status === activeFilter)
+  const filteredOrders = activeFilter === 'all'
+    ? orders
+    : orders.filter((o) => o.status === activeFilter)
+
+  const {
+    page,
+    setPage,
+    pageItems,
+    totalPages,
+    rangeFrom,
+    rangeTo,
+    totalItems,
+  } = usePaginatedList(filteredOrders)
+
+  useEffect(() => {
+    setPage(1)
+  }, [activeFilter, setPage])
 
   return (
     <div className="space-y-6">
@@ -68,41 +83,18 @@ export default function OrdersPage() {
         {isLoading ? (
           <div className="py-12 text-center text-text-secondary">Загрузка...</div>
         ) : filteredOrders.length > 0 ? (
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead>
-                <tr className="border-b border-border">
-                  <th className="text-left py-3 px-4 text-sm font-medium text-text-secondary">Номер</th>
-                  <th className="text-left py-3 px-4 text-sm font-medium text-text-secondary">Услуга</th>
-                  <th className="text-left py-3 px-4 text-sm font-medium text-text-secondary hidden sm:table-cell">Дата</th>
-                  <th className="text-left py-3 px-4 text-sm font-medium text-text-secondary hidden md:table-cell">Бюджет</th>
-                  <th className="text-left py-3 px-4 text-sm font-medium text-text-secondary">Статус</th>
-                  <th className="py-3 px-4"></th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredOrders.map((order) => (
-                  <tr key={order.id} className="border-b border-border last:border-0 hover:bg-secondary/50">
-                    <td className="py-4 px-4 font-medium text-text-primary">{order.id}</td>
-                    <td className="py-4 px-4 text-text-secondary">{order.service}</td>
-                    <td className="py-4 px-4 text-text-secondary hidden sm:table-cell">{order.createdAt}</td>
-                    <td className="py-4 px-4 text-text-secondary hidden md:table-cell">{order.budget}</td>
-                    <td className="py-4 px-4">
-                      <StatusBadge status={order.status} />
-                    </td>
-                    <td className="py-4 px-4">
-                      <Link 
-                        to={`/dashboard/orders/${order.id}`}
-                        className="text-accent hover:underline flex items-center gap-1"
-                      >
-                        Детали <ArrowRight className="w-4 h-4" />
-                      </Link>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+          <OrdersList
+            pageItems={pageItems}
+            loading={false}
+            pagination={{
+              page,
+              totalPages,
+              onPageChange: setPage,
+              rangeFrom,
+              rangeTo,
+              totalItems,
+            }}
+          />
         ) : (
           <div className="py-12 text-center text-text-secondary">
             {activeFilter === 'all'

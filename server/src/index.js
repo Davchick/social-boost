@@ -219,15 +219,12 @@ app.post("/api/orders", authRequired, async (req, res) => {
 });
 
 app.post("/api/contact", async (req, res) => {
-  const { name, email, phone, message, consent } = req.body || {};
-  if (!name || !email || !phone || !consent) {
+  const { name, email, message, consent } = req.body || {};
+  if (!name || !email || !consent) {
     return res.status(400).json({ message: "Заполните обязательные поля" });
   }
   if (!isValidEmail(email)) {
     return res.status(400).json({ message: "Некорректный email" });
-  }
-  if (!isValidRuPhone(phone)) {
-    return res.status(400).json({ message: "Некорректный телефон" });
   }
   if (message && typeof message !== "string") {
     return res.status(400).json({ message: "Некорректное сообщение" });
@@ -240,7 +237,7 @@ app.post("/api/contact", async (req, res) => {
     data: {
       name: String(name).trim(),
       email: String(email).trim().toLowerCase(),
-      phone: String(phone).trim(),
+      phone: null,
       message: trimmedMessage,
       consent: Boolean(consent),
     },

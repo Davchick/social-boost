@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import {
   ResponsiveContainer,
   AreaChart,
@@ -15,9 +15,17 @@ import {
   Legend,
 } from 'recharts'
 import { Card } from '@/components/common/Card'
+import { ChartPeriodToggle, chartPeriodLabel } from '@/components/admin/ChartPeriodToggle'
 import { buildDailySeries, buildStatusDistribution, buildTopServices } from '@/utils/chartData'
 
 const CHART_MARGIN = { top: 8, right: 8, left: -12, bottom: 0 }
+
+function xAxisInterval(days) {
+  if (days <= 7) return 0
+  if (days <= 14) return 1
+  if (days <= 30) return 2
+  return Math.max(4, Math.floor(days / 12) - 1)
+}
 
 function ChartTooltipContent({ active, payload, label }) {
   if (!active || !payload?.length) return null
@@ -35,12 +43,15 @@ function ChartTooltipContent({ active, payload, label }) {
   )
 }
 
-function ChartCard({ title, subtitle, children, className = '' }) {
+function ChartCard({ title, subtitle, headerExtra, children, className = '' }) {
   return (
     <Card hover={false} className={className}>
-      <div className="mb-4">
-        <h3 className="text-base font-semibold text-text-primary">{title}</h3>
-        {subtitle && <p className="mt-1 text-sm text-text-secondary">{subtitle}</p>}
+      <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+        <div>
+          <h3 className="text-base font-semibold text-text-primary">{title}</h3>
+          {subtitle && <p className="mt-1 text-sm text-text-secondary">{subtitle}</p>}
+        </div>
+        {headerExtra}
       </div>
       <div className="w-full min-h-[260px]">{children}</div>
     </Card>
@@ -56,15 +67,17 @@ function EmptyChartHint({ text }) {
 }
 
 export function AdminStatsCharts({ orders = [], contactRequests = [] }) {
+  const [periodDays, setPeriodDays] = useState(14)
+
   const activityData = useMemo(() => {
-    const orderDays = buildDailySeries(orders, 14)
-    const leadDays = buildDailySeries(contactRequests, 14)
+    const orderDays = buildDailySeries(orders, periodDays)
+    const leadDays = buildDailySeries(contactRequests, periodDays)
     return orderDays.map((row, index) => ({
       label: row.label,
       applications: row.count,
       leads: leadDays[index]?.count ?? 0,
     }))
-  }, [orders, contactRequests])
+  }, [orders, contactRequests, periodDays])
 
   const statusData = useMemo(() => buildStatusDistribution(orders), [orders])
   const topServices = useMemo(() => buildTopServices(orders), [orders])
@@ -73,11 +86,16 @@ export function AdminStatsCharts({ orders = [], contactRequests = [] }) {
   const hasStatus = statusData.length > 0
   const hasServices = topServices.length > 0
 
+  const periodToggle = (
+    <ChartPeriodToggle value={periodDays} onChange={setPeriodDays} className="shrink-0" />
+  )
+
   return (
     <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
       <ChartCard
         title="Динамика заявок"
-        subtitle="Заявки из личного кабинета и обращения с формы за 14 дней"
+        subtitle={`Заявки из личного кабинета и обращения с формы за ${chartPeriodLabel(periodDays)}`}
+        headerExtra={periodToggle}
         className="xl:col-span-2"
       >
         {hasActivity ? (
@@ -96,9 +114,13 @@ export function AdminStatsCharts({ orders = [], contactRequests = [] }) {
               <CartesianGrid strokeDasharray="3 3" stroke="#E2E8F0" vertical={false} />
               <XAxis
                 dataKey="label"
-                tick={{ fill: '#64748B', fontSize: 12 }}
+                tick={{ fill: '#64748B', fontSize: 11 }}
                 axisLine={false}
                 tickLine={false}
+                interval={xAxisInterval(periodDays)}
+                angle={periodDays > 30 ? -35 : 0}
+                textAnchor={periodDays > 30 ? 'end' : 'middle'}
+                height={periodDays > 30 ? 52 : 30}
               />
               <YAxis
                 allowDecimals={false}

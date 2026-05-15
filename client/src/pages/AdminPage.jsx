@@ -2,22 +2,15 @@ import { lazy, Suspense, useMemo } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useAuth } from '@/context/AuthContext'
 import { Card } from '@/components/common/Card'
-import { Button } from '@/components/common/Button'
-import { StatusBadge } from '@/components/common/Badge'
+import { OrdersList } from '@/components/common/OrdersList'
+import { ContactRequestsTable } from '@/components/admin/ContactRequestsTable'
+import { UsersTable } from '@/components/admin/UsersTable'
+import { usePaginatedList } from '@/hooks/usePaginatedList'
 import { api } from '@/utils/api'
+
 const AdminStatsCharts = lazy(() =>
   import('@/components/admin/AdminStatsCharts').then((m) => ({ default: m.AdminStatsCharts }))
 )
-
-const nextStatusMap = {
-  new: 'in-progress',
-  'in-progress': 'completed',
-}
-
-const statusButtonLabel = {
-  new: 'В работу',
-  'in-progress': 'Завершить',
-}
 
 export default function AdminPage() {
   const { isAdmin } = useAuth()
@@ -55,12 +48,7 @@ export default function AdminPage() {
     },
   })
 
-  const markContactProcessedMutation = useMutation({
-    mutationFn: (id) => api.updateContactRequestStatus(id, 'processed'),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['contact-requests'] })
-    },
-  })
+  const ordersPagination = usePaginatedList(orders)
 
   const stats = useMemo(() => {
     return {
@@ -101,152 +89,38 @@ export default function AdminPage() {
       </Suspense>
 
       <Card hover={false} className="h-full">
-        <h2 className="text-lg font-semibold text-text-primary mb-4">Пользователи</h2>
-        {usersLoading ? (
-          <div className="py-8 text-center text-text-secondary">Загрузка...</div>
-        ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead>
-                <tr className="border-b border-border">
-                  <th className="text-left py-3 px-3 text-sm text-text-secondary">Имя</th>
-                  <th className="text-left py-3 px-3 text-sm text-text-secondary">Почта</th>
-                  <th className="text-left py-3 px-3 text-sm text-text-secondary">Роль</th>
-                </tr>
-              </thead>
-              <tbody>
-                {users.map((user) => (
-                  <tr key={user.id} className="border-b border-border last:border-0">
-                    <td className="py-3 px-3">{user.name}</td>
-                    <td className="py-3 px-3">{user.email}</td>
-                    <td className="py-3 px-3 text-sm">
-                      {user.role === 'admin' ? 'Администратор' : 'Пользователь'}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
-      </Card>
-
-      <Card hover={false} className="h-full">
-        <h2 className="text-lg font-semibold text-text-primary mb-4">Заявки с формы обратной связи</h2>
+        <h2 className="text-lg font-semibold text-text-primary mb-2">Заявки с формы обратной связи</h2>
         <p className="text-sm text-text-secondary mb-4">
           Все обращения сохраняются в базе. Писем и уведомлений во внешние сервисы в текущей версии нет — обработка ведётся здесь.
         </p>
-        {contactLoading ? (
-          <div className="py-8 text-center text-text-secondary">Загрузка...</div>
-        ) : contactRequests.length === 0 ? (
-          <div className="py-6 text-text-secondary text-sm">Пока нет заявок.</div>
-        ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b border-border">
-                  <th className="text-left py-3 px-2 text-text-secondary">Дата</th>
-                  <th className="text-left py-3 px-2 text-text-secondary">Имя</th>
-                  <th className="text-left py-3 px-2 text-text-secondary">Контакты</th>
-                  <th className="text-left py-3 px-2 text-text-secondary hidden lg:table-cell">Сообщение</th>
-                  <th className="text-left py-3 px-2 text-text-secondary">Статус</th>
-                  <th className="text-right py-3 px-2 text-text-secondary">Действия</th>
-                </tr>
-              </thead>
-              <tbody>
-                {contactRequests.map((row) => (
-                  <tr key={row.id} className="border-b border-border last:border-0 align-top">
-                    <td className="py-3 px-2 text-text-secondary whitespace-nowrap">{row.createdAt}</td>
-                    <td className="py-3 px-2">{row.name}</td>
-                    <td className="py-3 px-2">
-                      <div className="space-y-1">
-                        <a href={`mailto:${row.email}`} className="text-accent hover:underline block break-all">{row.email}</a>
-                        <span className="text-text-secondary">{row.phone}</span>
-                      </div>
-                    </td>
-                    <td className="py-3 px-2 text-text-secondary max-w-xs hidden lg:table-cell">
-                      {row.message ? (
-                        <span className="line-clamp-4">{row.message}</span>
-                      ) : (
-                        '—'
-                      )}
-                    </td>
-                    <td className="py-3 px-2">
-                      {row.status === 'new' ? (
-                        <span className="text-accent font-medium">Новая</span>
-                      ) : (
-                        <span className="text-success">Обработана</span>
-                      )}
-                    </td>
-                    <td className="py-3 px-2 text-right">
-                      {row.status === 'new' && (
-                        <Button
-                          size="small"
-                          onClick={() => markContactProcessedMutation.mutate(row.id)}
-                          loading={markContactProcessedMutation.isPending}
-                        >
-                          Обработана
-                        </Button>
-                      )}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
+        <ContactRequestsTable rows={contactRequests} loading={contactLoading} />
+      </Card>
+
+      <Card hover={false} className="h-full">
+        <h2 className="text-lg font-semibold text-text-primary mb-4">Пользователи</h2>
+        <UsersTable users={users} loading={usersLoading} />
       </Card>
 
       <Card hover={false} className="h-full">
         <h2 className="text-lg font-semibold text-text-primary mb-4">Заявки</h2>
-        {ordersLoading ? (
-          <div className="py-8 text-center text-text-secondary">Загрузка...</div>
-        ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead>
-                <tr className="border-b border-border">
-                  <th className="text-left py-3 px-3 text-sm text-text-secondary">№</th>
-                  <th className="text-left py-3 px-3 text-sm text-text-secondary">Клиент</th>
-                  <th className="text-left py-3 px-3 text-sm text-text-secondary">Услуга</th>
-                  <th className="text-left py-3 px-3 text-sm text-text-secondary">Статус</th>
-                  <th className="text-right py-3 px-3 text-sm text-text-secondary">Действия</th>
-                </tr>
-              </thead>
-              <tbody>
-                {orders.map((order) => (
-                  <tr key={order.id} className="border-b border-border last:border-0">
-                    <td className="py-3 px-3">#{order.id}</td>
-                    <td className="py-3 px-3">{order.user?.name || '-'}</td>
-                    <td className="py-3 px-3">{order.service}</td>
-                    <td className="py-3 px-3"><StatusBadge status={order.status} /></td>
-                    <td className="py-3 px-3">
-                      <div className="flex justify-end gap-2">
-                        {nextStatusMap[order.status] && (
-                          <Button
-                            size="small"
-                            onClick={() => updateStatusMutation.mutate({ id: order.id, status: nextStatusMap[order.status] })}
-                            loading={updateStatusMutation.isPending}
-                          >
-                            {statusButtonLabel[order.status]}
-                          </Button>
-                        )}
-                        <Button
-                          size="small"
-                          variant="ghost"
-                          className="text-error hover:bg-error/5"
-                          onClick={() => deleteOrderMutation.mutate(order.id)}
-                          loading={deleteOrderMutation.isPending}
-                        >
-                          Удалить
-                        </Button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
+        <OrdersList
+          variant="admin"
+          pageItems={ordersPagination.pageItems}
+          loading={ordersLoading}
+          emptyMessage="Пока нет заявок"
+          onStatusUpdate={updateStatusMutation.mutate}
+          onDelete={deleteOrderMutation.mutate}
+          statusLoading={updateStatusMutation.isPending}
+          deleteLoading={deleteOrderMutation.isPending}
+          pagination={{
+            page: ordersPagination.page,
+            totalPages: ordersPagination.totalPages,
+            onPageChange: ordersPagination.setPage,
+            rangeFrom: ordersPagination.rangeFrom,
+            rangeTo: ordersPagination.rangeTo,
+            totalItems: ordersPagination.totalItems,
+          }}
+        />
       </Card>
     </div>
   )

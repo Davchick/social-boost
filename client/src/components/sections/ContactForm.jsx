@@ -6,14 +6,11 @@ import { Input } from '@/components/common/Input'
 import { Textarea } from '@/components/common/Textarea'
 import { Button } from '@/components/common/Button'
 import { api } from '@/utils/api'
-import { phoneFieldRulesRequired } from '@/utils/validation'
-import { PhoneInput } from '@/components/common/PhoneInput'
-
 export function ContactForm() {
   const [isSubmitted, setIsSubmitted] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   
-  const { register, control, handleSubmit, formState: { errors } } = useForm()
+  const { register, handleSubmit, formState: { errors } } = useForm()
 
   const onSubmit = async (data) => {
     setIsLoading(true)
@@ -64,14 +61,6 @@ export function ContactForm() {
             message: 'Некорректный email'
           }
         })}
-      />
-      
-      <PhoneInput
-        name="phone"
-        control={control}
-        label="Телефон"
-        placeholder="+7 (999) 123-45-67"
-        rules={phoneFieldRulesRequired}
       />
       
       <Textarea
