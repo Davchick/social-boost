@@ -1,13 +1,6 @@
 import { useMemo, useState } from 'react'
-import {
-  ArrowDown,
-  ArrowUp,
-  ArrowUpDown,
-  Check,
-  Copy,
-  Mail,
-  Search,
-} from 'lucide-react'
+import { Check, Copy, Mail, Search } from 'lucide-react'
+import { SortHeader } from '@/components/common/SortHeader'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { Button } from '@/components/common/Button'
 import { TablePagination } from '@/components/common/TablePagination'
@@ -51,23 +44,6 @@ function CopyButton({ value, label }) {
       aria-label={label}
     >
       {copied ? <Check className="w-3.5 h-3.5 text-success" /> : <Copy className="w-3.5 h-3.5" />}
-    </button>
-  )
-}
-
-function SortHeader({ label, active, direction, onClick }) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      className="inline-flex items-center gap-1 text-sm font-medium text-text-secondary hover:text-text-primary transition-colors"
-    >
-      {label}
-      {active ? (
-        direction === 'asc' ? <ArrowUp className="w-3.5 h-3.5" /> : <ArrowDown className="w-3.5 h-3.5" />
-      ) : (
-        <ArrowUpDown className="w-3.5 h-3.5 opacity-40" />
-      )}
     </button>
   )
 }

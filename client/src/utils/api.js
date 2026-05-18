@@ -81,6 +81,15 @@ export const api = {
     return response.data.order;
   },
 
+  rejectOrder: async (id, reason) => {
+    try {
+      const response = await http.patch(`/orders/${id}/reject`, { reason });
+      return response.data.order;
+    } catch (error) {
+      throw new Error(getErrorMessage(error, "Не удалось отклонить заявку"));
+    }
+  },
+
   deleteOrder: async (id) => {
     const response = await http.delete(`/orders/${id}`);
     return response.data;
@@ -91,7 +100,6 @@ export const api = {
       const response = await http.patch("/users/me", {
         name: data.name?.trim(),
         email: data.email?.trim().toLowerCase(),
-        phone: data.phone,
       });
       return response.data;
     } catch (error) {

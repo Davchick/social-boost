@@ -1,10 +1,11 @@
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { ArrowLeft, Check, X } from 'lucide-react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { Card } from '@/components/common/Card'
 import { Button } from '@/components/common/Button'
 import { StatusBadge } from '@/components/common/Badge'
+import { RejectOrderDialog } from '@/components/admin/RejectOrderDialog'
 import { api } from '@/utils/api'
 import { cn } from '@/utils/cn'
 import { useAuth } from '@/context/AuthContext'
@@ -73,6 +74,19 @@ export default function OrderDetailPage() {
     },
   })
 
+  const rejectOrderMutation = useMutation({
+    mutationFn: (reason) => api.rejectOrder(id, reason),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['orders'] })
+      queryClient.invalidateQueries({ queryKey: ['order', id] })
+    },
+  })
+
+  const [rejectDialogOpen, setRejectDialogOpen] = useState(false)
+  const [rejectError, setRejectError] = useState('')
+  const canAdminReject =
+    isAdmin && order && ['new', 'in-progress'].includes(order.status)
+
   const timeline = useMemo(() => {
     if (!order) return []
     const orderDate = order.createdAt || ''
@@ -112,6 +126,24 @@ export default function OrderDetailPage() {
 
   return (
     <div className="space-y-6">
+      <RejectOrderDialog
+        orderId={order.id}
+        open={rejectDialogOpen}
+        loading={rejectOrderMutation.isPending}
+        submitError={rejectError}
+        onClose={() => {
+          setRejectDialogOpen(false)
+          setRejectError('')
+        }}
+        onConfirm={(reason) => {
+          setRejectError('')
+          rejectOrderMutation.mutate(reason, {
+            onSuccess: () => setRejectDialogOpen(false),
+            onError: (err) => setRejectError(err.message || 'Не удалось отклонить заявку'),
+          })
+        }}
+      />
+
       {/* Header */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
@@ -129,7 +161,7 @@ export default function OrderDetailPage() {
           </div>
         </div>
         <div className="flex gap-2">
-          {order.status === 'new' && (
+          {!isAdmin && order.status === 'new' && (
             <Button
               variant="ghost"
               size="small"
@@ -138,6 +170,16 @@ export default function OrderDetailPage() {
               loading={cancelOrderMutation.isPending}
             >
               <X className="w-4 h-4 mr-2" /> Отменить
+            </Button>
+          )}
+          {canAdminReject && (
+            <Button
+              variant="ghost"
+              size="small"
+              className="text-error hover:bg-error/5"
+              onClick={() => setRejectDialogOpen(true)}
+            >
+              <X className="w-4 h-4 mr-2" /> Отклонить
             </Button>
           )}
           {isAdmin && order.status !== 'completed' && order.status !== 'cancelled' && (
@@ -182,6 +224,13 @@ export default function OrderDetailPage() {
               <div className="text-sm text-text-secondary">Описание задачи</div>
               <div className="mt-1 text-text-primary">{order.description}</div>
             </div>
+
+            {order.status === 'cancelled' && order.cancelReason && (
+              <div className="mt-4 p-4 rounded-12 border border-error/20 bg-error/5">
+                <div className="text-sm font-medium text-error">Причина отклонения</div>
+                <p className="mt-1 text-text-primary">{order.cancelReason}</p>
+              </div>
+            )}
           </Card>
         </div>
 

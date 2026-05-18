@@ -37,6 +37,7 @@ export function formatOrder(order) {
     timeline: order.timeline,
     description: order.description,
     wishes: order.wishes,
+    cancelReason: order.cancelReason || null,
     createdAt: new Date(order.createdAt).toLocaleDateString("ru-RU"),
     createdAtRaw: order.createdAt,
     userId: String(order.userId),

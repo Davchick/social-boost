@@ -7,7 +7,7 @@ import { TrendingUp, Users, Target, Award } from 'lucide-react'
 const stats = [
   { number: '150+', label: 'Довольных клиентов', icon: Users, color: 'from-indigo-500 to-indigo-400' },
   { number: '5M+', label: 'Охват в месяц', icon: TrendingUp, color: 'from-indigo-500 to-indigo-400' },
-  { number: '300%', label: 'Средняя окупаемость', icon: Target, color: 'from-indigo-500 to-indigo-400' },
+  { number: '300%', label: 'Окупаемость', icon: Target, color: 'from-indigo-500 to-indigo-400' },
   { number: '5', label: 'Лет опыта', icon: Award, color: 'from-indigo-500 to-indigo-400' },
 ]
 

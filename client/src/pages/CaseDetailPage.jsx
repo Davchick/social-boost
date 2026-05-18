@@ -174,15 +174,17 @@ function PhasesSection({ phases }) {
             <Milestone className="w-7 h-7 text-accent flex-shrink-0" aria-hidden />
             <h2 className="text-2xl md:text-3xl font-semibold">Этапы проекта</h2>
           </div>
-          <div className="mt-10 relative pl-8 border-l-2 border-accent/25">
+          <div className="mt-10 space-y-8">
             {phases.map((phase, i) => (
-              <div key={i} className="relative pb-10 last:pb-0">
+              <div key={i} className="flex items-start gap-4">
                 <span
-                  className="absolute -left-[calc(0.5rem+5px)] top-1.5 w-3 h-3 rounded-full bg-accent ring-4 ring-secondary"
+                  className="mt-1.5 w-3 h-3 shrink-0 rounded-full bg-accent"
                   aria-hidden
                 />
-                <h3 className="text-lg font-semibold text-text-primary">{phase.title}</h3>
-                <p className="mt-2 text-text-secondary leading-relaxed">{phase.description}</p>
+                <div className="min-w-0">
+                  <h3 className="text-lg font-semibold text-text-primary">{phase.title}</h3>
+                  <p className="mt-2 text-text-secondary leading-relaxed">{phase.description}</p>
+                </div>
               </div>
             ))}
           </div>

@@ -93,7 +93,7 @@ export function Hero({
             {[
               { value: '150+', label: 'Клиентов' },
               { value: '5M+', label: 'Охват в месяц' },
-              { value: '300%', label: 'Средняя окупаемость' },
+              { value: '300%', label: 'Окупаемость' },
             ].map((stat, i) => (
               <div key={i} className="text-center bg-secondary border border-border rounded-xl py-4 h-full flex flex-col justify-center">
                 <div className="text-xl md:text-2xl font-semibold text-text-primary">{stat.value}</div>

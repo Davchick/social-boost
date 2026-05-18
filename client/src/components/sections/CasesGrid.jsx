@@ -35,8 +35,6 @@ export function CasesGrid({ cases, industryLabelById }) {
                 alt={caseItem.title}
                 className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
               />
-              {/* Overlay gradient */}
-              <div className="absolute inset-0 bg-gradient-to-t from-secondary via-transparent to-transparent" />
             </div>
             
             {/* Content */}

@@ -94,19 +94,12 @@ app.get("/api/auth/me", authRequired, async (req, res) => {
 app.patch("/api/users/me", authRequired, async (req, res) => {
   const name = String(req.body.name || "").trim();
   const email = String(req.body.email || "").trim().toLowerCase();
-  const phone =
-    req.body.phone === undefined || req.body.phone === null || req.body.phone === ""
-      ? null
-      : String(req.body.phone).trim();
 
   if (!name || !email) {
     return res.status(400).json({ message: "Имя и email обязательны" });
   }
   if (!isValidEmail(email)) {
     return res.status(400).json({ message: "Некорректный email" });
-  }
-  if (phone && !isValidRuPhone(phone)) {
-    return res.status(400).json({ message: "Некорректный телефон" });
   }
 
   if (email !== req.user.email) {
@@ -116,9 +109,22 @@ app.patch("/api/users/me", authRequired, async (req, res) => {
     }
   }
 
+  const updateData = { name, email };
+
+  if (req.body.phone !== undefined) {
+    const phone =
+      req.body.phone === null || req.body.phone === ""
+        ? null
+        : String(req.body.phone).trim();
+    if (phone && !isValidRuPhone(phone)) {
+      return res.status(400).json({ message: "Некорректный телефон" });
+    }
+    updateData.phone = phone;
+  }
+
   const user = await prisma.user.update({
     where: { id: req.user.id },
-    data: { name, email, phone },
+    data: updateData,
   });
 
   return res.json({ user: formatUser(user) });
@@ -277,7 +283,34 @@ app.patch("/api/orders/:id/cancel", authRequired, async (req, res) => {
 
   const updated = await prisma.order.update({
     where: { id: orderId },
-    data: { status: "CANCELLED" },
+    data: { status: "CANCELLED", cancelReason: null },
+    include: { user: true },
+  });
+
+  return res.json({ order: formatOrder(updated) });
+});
+
+app.patch("/api/orders/:id/reject", authRequired, adminRequired, async (req, res) => {
+  const orderId = Number(req.params.id);
+  const reason = String(req.body.reason || "").trim();
+  if (!reason) {
+    return res.status(400).json({ message: "Укажите причину отклонения" });
+  }
+  if (reason.length > 500) {
+    return res.status(400).json({ message: "Причина не должна превышать 500 символов" });
+  }
+
+  const order = await prisma.order.findUnique({ where: { id: orderId } });
+  if (!order) {
+    return res.status(404).json({ message: "Заявка не найдена" });
+  }
+  if (order.status === "COMPLETED" || order.status === "CANCELLED") {
+    return res.status(400).json({ message: "Нельзя отклонить завершённую или отменённую заявку" });
+  }
+
+  const updated = await prisma.order.update({
+    where: { id: orderId },
+    data: { status: "CANCELLED", cancelReason: reason },
     include: { user: true },
   });
 

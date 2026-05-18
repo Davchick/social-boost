@@ -1,4 +1,4 @@
-import { lazy, Suspense, useMemo } from 'react'
+import { lazy, Suspense, useEffect, useMemo } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useAuth } from '@/context/AuthContext'
 import { Card } from '@/components/common/Card'
@@ -6,6 +6,7 @@ import { OrdersList } from '@/components/common/OrdersList'
 import { ContactRequestsTable } from '@/components/admin/ContactRequestsTable'
 import { UsersTable } from '@/components/admin/UsersTable'
 import { usePaginatedList } from '@/hooks/usePaginatedList'
+import { useOrdersSort } from '@/hooks/useOrdersSort'
 import { api } from '@/utils/api'
 
 const AdminStatsCharts = lazy(() =>
@@ -41,14 +42,19 @@ export default function AdminPage() {
     },
   })
 
-  const deleteOrderMutation = useMutation({
-    mutationFn: api.deleteOrder,
+  const rejectOrderMutation = useMutation({
+    mutationFn: ({ id, reason }) => api.rejectOrder(id, reason),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['orders'] })
     },
   })
 
-  const ordersPagination = usePaginatedList(orders)
+  const { sortBy, toggleSort, sorted: sortedOrders } = useOrdersSort(orders)
+  const ordersPagination = usePaginatedList(sortedOrders)
+
+  useEffect(() => {
+    ordersPagination.setPage(1)
+  }, [sortBy, ordersPagination.setPage])
 
   const stats = useMemo(() => {
     return {
@@ -106,12 +112,14 @@ export default function AdminPage() {
         <OrdersList
           variant="admin"
           pageItems={ordersPagination.pageItems}
+          sortBy={sortBy}
+          onToggleSort={toggleSort}
           loading={ordersLoading}
           emptyMessage="Пока нет заявок"
           onStatusUpdate={updateStatusMutation.mutate}
-          onDelete={deleteOrderMutation.mutate}
+          onReject={rejectOrderMutation.mutate}
           statusLoading={updateStatusMutation.isPending}
-          deleteLoading={deleteOrderMutation.isPending}
+          rejectLoading={rejectOrderMutation.isPending}
           pagination={{
             page: ordersPagination.page,
             totalPages: ordersPagination.totalPages,

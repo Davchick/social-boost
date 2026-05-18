@@ -6,6 +6,7 @@ import { Card } from '@/components/common/Card'
 import { Button } from '@/components/common/Button'
 import { OrdersList } from '@/components/common/OrdersList'
 import { usePaginatedList } from '@/hooks/usePaginatedList'
+import { useOrdersSort } from '@/hooks/useOrdersSort'
 import { useAuth } from '@/context/AuthContext'
 import { api } from '@/utils/api'
 import { cn } from '@/utils/cn'
@@ -29,6 +30,8 @@ export default function OrdersPage() {
     ? orders
     : orders.filter((o) => o.status === activeFilter)
 
+  const { sortBy, toggleSort, sorted: sortedOrders } = useOrdersSort(filteredOrders)
+
   const {
     page,
     setPage,
@@ -37,11 +40,11 @@ export default function OrdersPage() {
     rangeFrom,
     rangeTo,
     totalItems,
-  } = usePaginatedList(filteredOrders)
+  } = usePaginatedList(sortedOrders)
 
   useEffect(() => {
     setPage(1)
-  }, [activeFilter, setPage])
+  }, [activeFilter, sortBy, setPage])
 
   return (
     <div className="space-y-6">
@@ -85,6 +88,8 @@ export default function OrdersPage() {
         ) : filteredOrders.length > 0 ? (
           <OrdersList
             pageItems={pageItems}
+            sortBy={sortBy}
+            onToggleSort={toggleSort}
             loading={false}
             pagination={{
               page,

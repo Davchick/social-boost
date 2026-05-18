@@ -37,14 +37,15 @@ model User {
 }
 
 model Order {
-  id          Int         @id @default(autoincrement())
-  service     String
-  status      OrderStatus @default(NEW)
-  region      String
-  budget      String
-  timeline    String?
-  description String
-  wishes      String?
+  id           Int         @id @default(autoincrement())
+  service      String
+  status       OrderStatus @default(NEW)
+  cancelReason String?
+  region       String
+  budget       String
+  timeline     String?
+  description  String
+  wishes       String?
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
   userId      Int

@@ -1,8 +1,13 @@
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { ArrowRight } from 'lucide-react'
 import { Button } from '@/components/common/Button'
 import { StatusBadge } from '@/components/common/Badge'
+import { SortHeader, isSortActive, sortDirectionFor } from '@/components/common/SortHeader'
 import { TablePagination } from '@/components/common/TablePagination'
+import { RejectOrderDialog } from '@/components/admin/RejectOrderDialog'
+
+const rejectableStatuses = new Set(['new', 'in-progress'])
 
 const nextStatusMap = {
   new: 'in-progress',
@@ -47,8 +52,9 @@ function OrderListCard({ order }) {
   )
 }
 
-function AdminOrderCard({ order, onStatusUpdate, onDelete, statusLoading, deleteLoading }) {
+function AdminOrderCard({ order, onStatusUpdate, onRejectClick, statusLoading }) {
   const nextStatus = nextStatusMap[order.status]
+  const canReject = rejectableStatuses.has(order.status)
 
   return (
     <article className="rounded-xl border border-border bg-secondary/40 p-4 space-y-3">
@@ -70,15 +76,16 @@ function AdminOrderCard({ order, onStatusUpdate, onDelete, statusLoading, delete
             {statusButtonLabel[order.status]}
           </Button>
         )}
-        <Button
-          size="small"
-          variant="ghost"
-          className="text-error hover:bg-error/5"
-          onClick={() => onDelete(order.id)}
-          loading={deleteLoading}
-        >
-          Удалить
-        </Button>
+        {canReject && (
+          <Button
+            size="small"
+            variant="ghost"
+            className="text-error hover:bg-error/5"
+            onClick={() => onRejectClick(order.id)}
+          >
+            Отклонить
+          </Button>
+        )}
       </div>
     </article>
   )
@@ -90,11 +97,16 @@ export function OrdersList({
   emptyMessage = 'Пока нет заявок',
   variant = 'list',
   pagination,
+  sortBy,
+  onToggleSort,
   onStatusUpdate,
-  onDelete,
+  onReject,
   statusLoading = false,
-  deleteLoading = false,
+  rejectLoading = false,
 }) {
+  const [rejectOrderId, setRejectOrderId] = useState(null)
+  const [rejectError, setRejectError] = useState('')
+
   if (loading) {
     return <div className="py-12 text-center text-text-secondary">Загрузка...</div>
   }
@@ -104,9 +116,38 @@ export function OrdersList({
   }
 
   const isAdmin = variant === 'admin'
+  const canSort = Boolean(sortBy && onToggleSort)
+
+  function handleRejectConfirm(reason) {
+    if (!rejectOrderId || !onReject) return
+    setRejectError('')
+    onReject(
+      { id: rejectOrderId, reason },
+      {
+        onSuccess: () => setRejectOrderId(null),
+        onError: (err) => setRejectError(err.message || 'Не удалось отклонить заявку'),
+      },
+    )
+  }
+
+  function closeRejectDialog() {
+    setRejectOrderId(null)
+    setRejectError('')
+  }
 
   return (
     <>
+      {isAdmin && (
+        <RejectOrderDialog
+          orderId={rejectOrderId}
+          open={Boolean(rejectOrderId)}
+          loading={rejectLoading}
+          submitError={rejectError}
+          onClose={closeRejectDialog}
+          onConfirm={handleRejectConfirm}
+        />
+      )}
+
       <div className="space-y-3 md:hidden">
         {pageItems.map((order) =>
           isAdmin ? (
@@ -114,9 +155,8 @@ export function OrdersList({
               key={order.id}
               order={order}
               onStatusUpdate={onStatusUpdate}
-              onDelete={onDelete}
+              onRejectClick={setRejectOrderId}
               statusLoading={statusLoading}
-              deleteLoading={deleteLoading}
             />
           ) : (
             <OrderListCard key={order.id} order={order} />
@@ -137,8 +177,30 @@ export function OrdersList({
               <th className="text-left py-3 px-4 font-medium text-text-secondary">Услуга</th>
               {!isAdmin && (
                 <>
-                  <th className="text-left py-3 px-4 font-medium text-text-secondary">Дата</th>
-                  <th className="text-left py-3 px-4 font-medium text-text-secondary">Бюджет</th>
+                  <th className="text-left py-3 px-4">
+                    {canSort ? (
+                      <SortHeader
+                        label="Дата"
+                        active={isSortActive(sortBy, 'date')}
+                        direction={sortDirectionFor(sortBy, 'date')}
+                        onClick={() => onToggleSort('date')}
+                      />
+                    ) : (
+                      <span className="font-medium text-text-secondary">Дата</span>
+                    )}
+                  </th>
+                  <th className="text-left py-3 px-4">
+                    {canSort ? (
+                      <SortHeader
+                        label="Бюджет"
+                        active={isSortActive(sortBy, 'budget')}
+                        direction={sortDirectionFor(sortBy, 'budget')}
+                        onClick={() => onToggleSort('budget')}
+                      />
+                    ) : (
+                      <span className="font-medium text-text-secondary">Бюджет</span>
+                    )}
+                  </th>
                 </>
               )}
               <th className="text-left py-3 px-4 font-medium text-text-secondary">Статус</th>
@@ -181,15 +243,16 @@ export function OrdersList({
                           {statusButtonLabel[order.status]}
                         </Button>
                       )}
-                      <Button
-                        size="small"
-                        variant="ghost"
-                        className="text-error hover:bg-error/5"
-                        onClick={() => onDelete(order.id)}
-                        loading={deleteLoading}
-                      >
-                        Удалить
-                      </Button>
+                      {rejectableStatuses.has(order.status) && (
+                        <Button
+                          size="small"
+                          variant="ghost"
+                          className="text-error hover:bg-error/5"
+                          onClick={() => setRejectOrderId(order.id)}
+                        >
+                          Отклонить
+                        </Button>
+                      )}
                     </div>
                   ) : (
                     <Link

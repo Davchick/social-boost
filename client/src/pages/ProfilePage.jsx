@@ -7,19 +7,16 @@ import { Input } from '@/components/common/Input'
 import { PasswordInput } from '@/components/common/PasswordInput'
 import { Button } from '@/components/common/Button'
 import { api } from '@/utils/api'
-import { phoneFieldRulesOptional } from '@/utils/validation'
-import { PhoneInput } from '@/components/common/PhoneInput'
 
 function ProfileForm({ user, onUpdate }) {
   const [isLoading, setIsLoading] = useState(false)
   const [success, setSuccess] = useState(false)
   const [error, setError] = useState('')
 
-  const { register, control, handleSubmit, formState: { errors } } = useForm({
+  const { register, handleSubmit, formState: { errors } } = useForm({
     defaultValues: {
       name: user?.name || '',
       email: user?.email || '',
-      phone: user?.phone || '',
     },
   })
 
@@ -60,14 +57,6 @@ function ProfileForm({ user, onUpdate }) {
             message: 'Некорректный email',
           },
         })}
-      />
-
-      <PhoneInput
-        name="phone"
-        control={control}
-        label="Телефон"
-        placeholder="+7 (999) 123-45-67"
-        rules={phoneFieldRulesOptional}
       />
 
       {error && <p className="text-sm text-error">{error}</p>}
