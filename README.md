@@ -81,7 +81,30 @@ bash deploy/update-api.sh
 
 Демо-сиды на проде (по желанию): `cd server && RUN_SEED=1` не нужен — вручную `npm run prisma:seed` в `server/`.
 
-Фронтенд: соберите `client` (`npm run build`) и отдайте через nginx, либо укажите в `client/.env` `VITE_API_URL=http://IP_СЕРВЕРА:4000/api` при сборке.
+### HTTPS на домене smart-word.ru
+
+Фронт на Render (HTTPS) → API тоже должен быть по HTTPS.
+
+1. **DNS в Beget** (не трогайте MX/TXT для почты):
+   - Тип **A**, имя **`api`**, значение **IP вашего VPS** (тот, где крутится PM2; не обязательно 159.194.198.249 с корневой A-записи).
+   - Подождите 5–30 мин, проверка: `ping api.smart-word.ru`
+
+2. **На VPS** (API уже через `setup-vps.sh` + PM2):
+   ```bash
+   cd ~/server/social-boost
+   git pull
+   bash deploy/setup-domain-ssl.sh
+   ```
+
+3. **server/.env** на VPS:
+   - `CLIENT_URL=https://social-boost-o64n.onrender.com`
+   - `PORT=4000`
+
+4. **Render** → Environment → `VITE_API_URL=https://api.smart-word.ru/api` → пересборка деплоя.
+
+Проверка: `curl https://api.smart-word.ru/api/health`
+
+Фронтенд локально: `client/.env` с `VITE_API_URL=https://api.smart-word.ru/api`
 
 ## 4) Запуск
 
