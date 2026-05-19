@@ -104,6 +104,10 @@ bash deploy/update-api.sh
 
 Проверка: `curl https://api.smart-word.ru/api/health`
 
+### 404 при обновлении страницы на Render (`/register` и т.д.)
+
+React Router — клиентские маршруты. Нужен rewrite на `index.html` (файл `client/public/_redirects`). После `git push` — **Manual Deploy** на Render.
+
 Фронтенд локально: `client/.env` с `VITE_API_URL=https://api.smart-word.ru/api`
 
 ## 4) Запуск
