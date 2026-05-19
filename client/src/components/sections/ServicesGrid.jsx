@@ -1,16 +1,11 @@
 import { Link } from 'react-router-dom'
-import { Target, Video, Users, ArrowRight } from 'lucide-react'
+import { ArrowRight } from 'lucide-react'
+import { getServiceIcon } from '@/utils/serviceIcons'
 import { Container } from '@/components/common/Container'
 import { Section, SectionHeader } from '@/components/common/Section'
 import { services } from '@/data/services'
 import { useScrollAnimation } from '@/hooks/useScrollAnimation'
 import { cn } from '@/utils/cn'
-
-const iconMap = {
-  Target,
-  Video,
-  Users,
-}
 
 const gradientMap = {
   'smm': 'from-indigo-500 to-indigo-400',
@@ -41,7 +36,7 @@ export function ServicesGrid({ limit, showHeader = true, title, subtitle }) {
         )}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 grid-equal">
           {displayServices.map((service, index) => {
-            const Icon = iconMap[service.icon]
+            const Icon = getServiceIcon(service.icon)
             const gradient = gradientMap[service.id] || 'from-accent to-accent-secondary'
             const glow = glowMap[service.id] || 'group-hover:shadow-glow'
             

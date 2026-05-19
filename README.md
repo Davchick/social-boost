@@ -55,6 +55,34 @@ npm run prisma:seed:demo
 
 Скрипт создаёт ~50 заявок и ~50 обращений с сайта, 20 дополнительных клиентов, даты за последние 28 дней (графики в админке). При каждом запуске **удаляет** все заявки и обращения и создаёт заново. Чтобы только дописать данные, если их мало: `node prisma/seed-demo.js --no-reset`.
 
+## Деплой API на VPS (Ubuntu / Beget)
+
+Репозиторий на сервере, например: `~/server/social-boost/` (внутри — `client/` и `server/`).
+
+**Один раз** (под root или пользователя с sudo):
+
+```bash
+cd ~/server/social-boost
+git pull   # если ещё не клонировали — сначала git clone ...
+bash deploy/setup-vps.sh
+```
+
+Скрипт сам установит Node 20, PostgreSQL, PM2, создаст БД, `server/.env`, применит миграции и запустит API.
+
+Проверка: `curl http://127.0.0.1:4000/api/health` → `{"ok":true}`.
+
+После `git pull` на сервере:
+
+```bash
+bash deploy/update-api.sh
+```
+
+Полезные команды: `pm2 status`, `pm2 logs social-boost-api`, `pm2 restart social-boost-api`.
+
+Демо-сиды на проде (по желанию): `cd server && RUN_SEED=1` не нужен — вручную `npm run prisma:seed` в `server/`.
+
+Фронтенд: соберите `client` (`npm run build`) и отдайте через nginx, либо укажите в `client/.env` `VITE_API_URL=http://IP_СЕРВЕРА:4000/api` при сборке.
+
 ## 4) Запуск
 
 Терминал 1:

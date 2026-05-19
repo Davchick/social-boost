@@ -3,7 +3,8 @@ import { useForm } from 'react-hook-form'
 import { Link, Navigate } from 'react-router-dom'
 import { useAuth } from '@/context/AuthContext'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { Check, ArrowLeft, ArrowRight, CheckCircle, Search, Target, TrendingUp, Users } from 'lucide-react'
+import { Check, ArrowLeft, ArrowRight, CheckCircle } from 'lucide-react'
+import { getServiceIcon } from '@/utils/serviceIcons'
 import { Card } from '@/components/common/Card'
 import { Input } from '@/components/common/Input'
 import { Textarea } from '@/components/common/Textarea'
@@ -11,13 +12,6 @@ import { Button } from '@/components/common/Button'
 import { services } from '@/data/services'
 import { api } from '@/utils/api'
 import { cn } from '@/utils/cn'
-
-const iconMap = {
-  Search,
-  Target,
-  TrendingUp,
-  Users,
-}
 
 const steps = [
   { id: 1, title: 'Выбор услуги' },
@@ -64,7 +58,7 @@ function ServiceSelect({ selectedService, onSelect }) {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
       {services.map((service) => {
-        const Icon = iconMap[service.icon]
+        const Icon = getServiceIcon(service.icon)
         const isSelected = selectedService?.id === service.id
         return (
           <button
@@ -142,7 +136,7 @@ function BriefForm({ register, errors }) {
         error={errors.description?.message}
         {...register('description', { 
           required: 'Опишите задачу',
-          minLength: { value: 30, message: 'Опишите задачу чуть подробнее (минимум 30 символов)' }
+          minLength: { value: 5, message: 'Опишите задачу чуть подробнее (минимум 5 символов)' }
         })}
       />
       
