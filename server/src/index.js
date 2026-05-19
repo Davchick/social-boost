@@ -3,7 +3,7 @@ import cors from "cors";
 import morgan from "morgan";
 import bcrypt from "bcryptjs";
 import { Role } from "@prisma/client";
-import { config } from "./config.js";
+import { config, normalizeOrigin } from "./config.js";
 import { prisma } from "./prisma.js";
 import {
   formatContactRequest,
@@ -21,7 +21,20 @@ const app = express();
 
 app.use(
   cors({
-    origin: config.clientUrl,
+    origin(origin, callback) {
+      // Postman, curl — без заголовка Origin
+      if (!origin) {
+        return callback(null, true);
+      }
+      const requestOrigin = normalizeOrigin(origin);
+      if (config.clientUrls.includes(requestOrigin)) {
+        return callback(null, true);
+      }
+      console.warn(
+        `[CORS] Заблокирован origin: ${requestOrigin}. Разрешены: ${config.clientUrls.join(", ")}`,
+      );
+      return callback(null, false);
+    },
     credentials: true,
   }),
 );

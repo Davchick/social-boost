@@ -47,7 +47,7 @@ SERVER_DIR="$REPO_ROOT/server"
 
 API_DOMAIN="${API_DOMAIN:-api.smart-word.ru}"
 API_PORT="${API_PORT:-4000}"
-CLIENT_URL="${CLIENT_URL:-https://social-boost-o64n.onrender.com}"
+CLIENT_URL="${CLIENT_URL:-https://social-boost-o64n.onrender.com,http://localhost:5173}"
 CERTBOT_EMAIL="${CERTBOT_EMAIL:-}"
 
 [[ -f "$SERVER_DIR/package.json" ]] || die "Запустите из репозитория social-boost (папки client/ и server/)."
@@ -99,6 +99,8 @@ ENV_FILE="$SERVER_DIR/.env"
 if [[ -f "$ENV_FILE" ]]; then
   if grep -q '^CLIENT_URL=' "$ENV_FILE"; then
     sed -i "s|^CLIENT_URL=.*|CLIENT_URL=\"${CLIENT_URL}\"|" "$ENV_FILE"
+  elif grep -q '^CLIENT_URLS=' "$ENV_FILE"; then
+    sed -i "s|^CLIENT_URLS=.*|CLIENT_URL=\"${CLIENT_URL}\"|" "$ENV_FILE"
   else
     echo "CLIENT_URL=\"${CLIENT_URL}\"" >> "$ENV_FILE"
   fi
