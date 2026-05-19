@@ -17,6 +17,30 @@ info()  { echo -e "${GREEN}==>${NC} $*"; }
 warn()  { echo -e "${YELLOW}!!>${NC} $*"; }
 die()   { echo -e "${RED}ERROR:${NC} $*" >&2; exit 1; }
 
+# На свежем Ubuntu часто идёт unattended-upgrades — ждём освобождения apt
+wait_for_apt() {
+  local max_wait="${APT_LOCK_WAIT_SEC:-600}"
+  local waited=0
+  while sudo fuser /var/lib/dpkg/lock-frontend >/dev/null 2>&1 \
+     || sudo fuser /var/lib/apt/lists/lock >/dev/null 2>&1 \
+     || sudo fuser /var/cache/apt/archives/lock >/dev/null 2>&1; do
+    if (( waited == 0 )); then
+      warn "Другой apt-процесс занят (часто автообновление). Жду до ${max_wait} сек..."
+      ps aux | grep -E '[a]pt|[d]pkg|[u]nattended' || true
+    fi
+    if (( waited >= max_wait )); then
+      die "apt lock не освободился за ${max_wait} сек. Подождите и запустите скрипт снова: bash deploy/setup-vps.sh"
+    fi
+    sleep 5
+    waited=$((waited + 5))
+  done
+}
+
+apt_install() {
+  wait_for_apt
+  sudo DEBIAN_FRONTEND=noninteractive apt-get "$@"
+}
+
 # Корень репозитория: deploy/.. или REPO_ROOT
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="${REPO_ROOT:-$(cd "$SCRIPT_DIR/.." && pwd)}"
@@ -51,16 +75,17 @@ fi
 # --- установка системных пакетов ---
 if ! command -v node >/dev/null 2>&1 || [[ "$(node -v | sed 's/v//' | cut -d. -f1)" -lt 20 ]]; then
   info "Установка Node.js 20..."
-  sudo apt-get update -qq
-  sudo apt-get install -y ca-certificates curl gnupg
+  apt_install update -qq
+  apt_install install -y ca-certificates curl gnupg
+  wait_for_apt
   curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
-  sudo apt-get install -y nodejs
+  apt_install install -y nodejs
 fi
 
 if ! command -v psql >/dev/null 2>&1; then
   info "Установка PostgreSQL..."
-  sudo apt-get update -qq
-  sudo DEBIAN_FRONTEND=noninteractive apt-get install -y postgresql postgresql-contrib
+  apt_install update -qq
+  apt_install install -y postgresql postgresql-contrib
   sudo systemctl enable postgresql
   sudo systemctl start postgresql
 fi
