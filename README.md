@@ -59,6 +59,42 @@ npm run prisma:seed:demo
 
 Репозиторий на сервере, например: `~/server/social-boost/` (внутри — `client/` и `server/`).
 
+### Полный деплой фронтенда и API одной командой
+
+На VPS должны быть DNS A-записи:
+
+- `smart-word.ru` → IP вашего VPS
+- `api.smart-word.ru` → IP вашего VPS
+
+После этого из корня репозитория на VPS:
+
+```bash
+cd ~/govno/social-boost
+CERTBOT_EMAIL=you@example.com bash deploy/deploy-smart-word-full.sh
+```
+
+Скрипт:
+
+- собирает фронтенд и отдаёт его через Nginx на `https://smart-word.ru`;
+- запускает API через PM2 на свободном локальном порту, по умолчанию `127.0.0.1:4000`;
+- проксирует API через Nginx на `https://api.smart-word.ru/api`;
+- создаёт PostgreSQL-базу, пишет `server/.env` и `client/.env.production`;
+- применяет Prisma migrations и выпускает SSL-сертификаты Let's Encrypt;
+- не удаляет чужие Nginx-сайты и останавливается, если `smart-word.ru` или `api.smart-word.ru` уже заняты другим конфигом.
+
+Если нужен `www.smart-word.ru`, сначала добавьте DNS A-запись `www` → IP VPS, затем запустите:
+
+```bash
+CERTBOT_EMAIL=you@example.com FRONT_ALIASES=www.smart-word.ru bash deploy/deploy-smart-word-full.sh
+```
+
+Проверка:
+
+```bash
+curl https://api.smart-word.ru/api/health
+pm2 logs smart-word-api
+```
+
 **Один раз** (под root или пользователя с sudo):
 
 ```bash
