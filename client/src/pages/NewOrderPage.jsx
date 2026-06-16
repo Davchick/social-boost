@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useForm } from 'react-hook-form'
+import { useForm, Controller } from 'react-hook-form'
 import { Link, Navigate } from 'react-router-dom'
 import { useAuth } from '@/context/AuthContext'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
@@ -8,8 +8,10 @@ import { getServiceIcon } from '@/utils/serviceIcons'
 import { Card } from '@/components/common/Card'
 import { Input } from '@/components/common/Input'
 import { Textarea } from '@/components/common/Textarea'
+import { AutocompleteInput } from '@/components/common/AutocompleteInput'
 import { Button } from '@/components/common/Button'
 import { services } from '@/data/services'
+import { isCityAllowed } from '@/data/regions'
 import { api } from '@/utils/api'
 import { cn } from '@/utils/cn'
 
@@ -98,14 +100,39 @@ function ServiceSelect({ selectedService, onSelect }) {
   )
 }
 
-function BriefForm({ register, errors }) {
+function BriefForm({ register, errors, control }) {
   return (
     <div className="space-y-6">
-      <Input
-        label="Регион продвижения *"
-        placeholder="Москва и МО"
-        error={errors.region?.message}
-        {...register('region', { required: 'Укажите регион' })}
+      <Controller
+        name="region"
+        control={control}
+        rules={{
+          required: 'Укажите регион',
+          validate: (value) => {
+            if (!value || typeof value !== 'string') {
+              return 'Укажите регион'
+            }
+            
+            const trimmedValue = value.trim()
+            if (!trimmedValue) {
+              return 'Укажите регион'
+            }
+            
+            if (!isCityAllowed(trimmedValue)) {
+              return 'Пока мы не работаем в этой зоне'
+            }
+            
+            return true
+          }
+        }}
+        render={({ field }) => (
+          <AutocompleteInput
+            label="Регион продвижения *"
+            placeholder="Начните вводить город..."
+            error={errors.region?.message}
+            {...field}
+          />
+        )}
       />
       
       <Input
@@ -117,7 +144,7 @@ function BriefForm({ register, errors }) {
           validate: (value) => {
             const digits = String(value || '').replace(/\D/g, '')
             if (!digits) return 'Укажите бюджет'
-            if (Number(digits) < 1000) return 'Бюджет слишком маленький'
+            if (Number(digits) < 50000) return 'Минимальный бюджет — 50 000 ₽'
             return true
           }
         })}
@@ -228,7 +255,7 @@ export default function NewOrderPage() {
   })
 
 
-  const { register, handleSubmit, getValues, trigger, formState: { errors } } = useForm({
+  const { register, handleSubmit, getValues, trigger, control, formState: { errors } } = useForm({
     mode: 'onTouched',
   })
 
@@ -312,7 +339,7 @@ export default function NewOrderPage() {
             <h2 className="text-lg font-semibold text-text-primary mb-4">
               Заполните бриф
             </h2>
-            <BriefForm register={register} errors={errors} />
+            <BriefForm register={register} errors={errors} control={control} />
             <div className="mt-8 flex justify-between">
               <Button type="button" variant="secondary" onClick={handleBack}>
                 <ArrowLeft className="w-4 h-4 mr-2" /> Назад

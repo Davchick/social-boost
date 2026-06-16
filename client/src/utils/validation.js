@@ -71,3 +71,26 @@ export const phoneFieldRulesOptional = {
   },
 }
 
+// Валидация для поля региона
+import { isCityAllowed } from '@/data/regions'
+
+export const regionFieldRules = {
+  required: 'Укажите регион',
+  validate: (value) => {
+    if (!value || typeof value !== 'string') {
+      return 'Укажите регион'
+    }
+    
+    const trimmedValue = value.trim()
+    if (!trimmedValue) {
+      return 'Укажите регион'
+    }
+    
+    if (!isCityAllowed(trimmedValue)) {
+      return 'Пока мы не работаем в этой зоне'
+    }
+    
+    return true
+  }
+}
+
