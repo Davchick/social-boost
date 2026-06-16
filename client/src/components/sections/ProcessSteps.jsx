@@ -16,7 +16,7 @@ export function ProcessSteps() {
   const { ref, isVisible } = useScrollAnimation()
 
   return (
-    <Section ref={ref} background="secondary">
+    <Section ref={ref} background="gradient-purple">
       <Container>
         <SectionHeader 
           title="Как мы работаем" 

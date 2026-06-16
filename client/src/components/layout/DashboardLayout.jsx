@@ -27,7 +27,7 @@ export function DashboardLayout() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-primary">
+      <div className="min-h-screen flex items-center justify-center bg-transparent">
         <div className="w-10 h-10 rounded-xl bg-accent/20 animate-pulse" />
       </div>
     )
@@ -38,7 +38,7 @@ export function DashboardLayout() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-primary">
+    <div className="min-h-screen flex flex-col bg-transparent">
       <Header />
       <main className="flex-1 pt-20">
         <Container className={cn('py-6 md:py-10', wideAdminLayout && 'max-w-container-wide')}>

@@ -19,7 +19,7 @@ export function Testimonials() {
   const testimonial = testimonials[currentIndex]
 
   return (
-    <Section>
+    <Section background="tertiary">
       <Container>
         <SectionHeader 
           title="Отзывы клиентов" 

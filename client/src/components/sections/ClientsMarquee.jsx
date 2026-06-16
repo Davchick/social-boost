@@ -25,7 +25,7 @@ const clients = [
 
 export function ClientsMarquee() {
   return (
-    <section className="py-12 bg-secondary border-y border-border overflow-hidden">
+    <section className="py-12 bg-gradient-to-r from-secondary via-tertiary to-secondary border-y border-border overflow-hidden">
       <Container className="mb-8">
         <p className="text-center text-text-muted text-sm uppercase tracking-wider">
           Нам доверяют

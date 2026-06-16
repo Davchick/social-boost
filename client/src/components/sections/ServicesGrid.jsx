@@ -26,7 +26,7 @@ export function ServicesGrid({ limit, showHeader = true, title, subtitle }) {
   const displayServices = limit ? services.slice(0, limit) : services
 
   return (
-    <Section ref={ref}>
+    <Section ref={ref} background="gradient-soft">
       <Container>
         {showHeader && (
           <SectionHeader 

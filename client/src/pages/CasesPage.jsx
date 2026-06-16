@@ -42,7 +42,7 @@ export default function CasesPage() {
         title="Наши работы"
         subtitle="Реальные результаты для реальных клиентов"
       />
-      <Section>
+      <Section background="gradient-soft">
         <Container>
           <Filters activeFilter={activeFilter} onFilterChange={setActiveFilter} />
           <CasesGrid cases={filteredCases} industryLabelById={industryLabelById} />

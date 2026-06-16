@@ -43,7 +43,7 @@ export default function RegisterPage() {
   }
 
   return (
-    <Section className="min-h-[calc(100vh-80px)] flex items-center">
+    <Section background="gradient-soft" className="min-h-[calc(100vh-80px)] flex items-center">
       <Container>
         <div className="max-w-4xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start lg:items-stretch grid-equal">

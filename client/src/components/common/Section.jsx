@@ -11,7 +11,13 @@ export const Section = forwardRef(function Section({
   const backgrounds = {
     primary: 'bg-primary',
     secondary: 'bg-secondary',
+    tertiary: 'bg-tertiary',
     gradient: 'bg-gradient-to-b from-primary to-tertiary',
+    'gradient-purple': 'bg-gradient-to-b from-tertiary to-secondary',
+    'gradient-soft': 'bg-gradient-to-b from-tertiary via-secondary to-primary',
+    'gradient-mesh': 'bg-gradient-mesh',
+    'gradient-hero': 'bg-gradient-hero',
+    transparent: 'bg-transparent',
   }
 
   return (

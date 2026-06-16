@@ -16,7 +16,7 @@ export function CTASection({
   const { ref, isVisible } = useScrollAnimation()
 
   return (
-    <Section ref={ref}>
+    <Section ref={ref} background="gradient-mesh">
       <Container>
         <div 
           className={cn(

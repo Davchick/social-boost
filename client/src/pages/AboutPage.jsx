@@ -19,7 +19,7 @@ function MissionSection() {
   const { ref, isVisible } = useScrollAnimation()
 
   return (
-    <Section ref={ref}>
+    <Section ref={ref} background="secondary">
       <Container>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div 
@@ -100,7 +100,7 @@ function TeamSection() {
   const { ref, isVisible } = useScrollAnimation()
 
   return (
-    <Section ref={ref}>
+    <Section ref={ref} background="gradient-soft">
       <Container>
         <SectionHeader 
           title="Наша команда" 

@@ -21,7 +21,7 @@ export default function ContactPage() {
         title="Свяжитесь с нами"
         subtitle="Оставьте заявку и мы перезвоним вам в течение часа"
       />
-      <Section>
+      <Section background="tertiary">
         <Container>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start lg:items-stretch grid-equal">
             {/* Form */}

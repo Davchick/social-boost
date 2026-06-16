@@ -31,7 +31,7 @@ function AnimatedBlock({ children, className }) {
 
 function CaseHero({ caseData }) {
   return (
-    <section className="py-20 md:py-32 bg-white">
+    <section className="py-20 md:py-32 bg-secondary">
       <Container>
         <div className="max-w-4xl mx-auto">
           <div className="flex flex-wrap gap-2 mb-6">
@@ -79,7 +79,7 @@ function AboutSection({ about }) {
 
 function TaskAndChallengesSection({ task, challenges }) {
   return (
-    <Section>
+    <Section background="gradient-soft">
       <Container>
         <AnimatedBlock className="max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-14 lg:items-start">
           <div>
@@ -141,7 +141,7 @@ function SolutionSection({ solution, steps }) {
 function ChannelsSection({ channels }) {
   if (!channels?.length) return null
   return (
-    <Section>
+    <Section background="secondary">
       <Container>
         <AnimatedBlock className="max-w-5xl mx-auto">
           <div className="flex items-center gap-3 text-text-primary">
@@ -197,7 +197,7 @@ function PhasesSection({ phases }) {
 function ResultSection({ result, resultDetails, metrics }) {
   const { ref, isVisible } = useScrollAnimation()
   return (
-    <Section ref={ref}>
+    <Section ref={ref} background="gradient-purple">
       <Container>
         <div
           className={cn(
@@ -267,7 +267,7 @@ function TakeawaysSection({ takeaways }) {
 function TestimonialSection({ testimonial }) {
   const { ref, isVisible } = useScrollAnimation()
   return (
-    <Section ref={ref}>
+    <Section ref={ref} background="tertiary">
       <Container>
         <div
           className={cn(
@@ -315,13 +315,13 @@ export default function CaseDetailPage() {
       <SolutionSection solution={caseData.solution} steps={caseData.steps} />
       <ChannelsSection channels={caseData.channels} />
       <PhasesSection phases={caseData.phases} />
+      <TakeawaysSection takeaways={caseData.takeaways} />
+      <TestimonialSection testimonial={caseData.testimonial} />
       <ResultSection
         result={caseData.result}
         resultDetails={caseData.resultDetails}
         metrics={caseData.metrics}
       />
-      <TakeawaysSection takeaways={caseData.takeaways} />
-      <TestimonialSection testimonial={caseData.testimonial} />
       <CTASection
         title="Обсудим ваш проект?"
         subtitle="Получите бесплатную консультацию и план действий для вашего бизнеса"
